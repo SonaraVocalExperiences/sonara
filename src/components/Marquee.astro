@@ -1,0 +1,39 @@
+---
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+// Repeat to ensure seamless loop
+const repeated = `${text} ${text} `;
+---
+
+<div class="bg-sage overflow-hidden py-5 border-y border-dark/10">
+  <div class="marquee-track flex whitespace-nowrap">
+    <span class="marquee-content text-cream text-sm font-bold tracking-[0.3em] uppercase pr-16">{repeated}</span>
+    <span class="marquee-content text-cream text-sm font-bold tracking-[0.3em] uppercase pr-16" aria-hidden="true">
+      {repeated}
+    </span>
+  </div>
+</div>
+
+<style>
+  .marquee-track {
+    animation: marquee 30s linear infinite;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+</style>

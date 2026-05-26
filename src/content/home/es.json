@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "approach": "Nuestro enfoque",
+    "contact": "Contáctanos"
+  },
+  "hero": {
+    "headline": "SONARA",
+    "subtitle": "Vocal Experiences for Wellbeing",
+    "body": "Diseñamos y facilitamos experiencias vocales basadas en el canto y la musicoterapia para regular el estrés, prevenir el burnout y fortalecer la comunicación, la cohesión y el rendimiento en equipos corporativos.",
+    "ctaText": "RESERVA TU SESIÓN",
+    "ctaUrl": "#contacto"
+  },
+  "video": {
+    "url": "https://www.youtube.com/embed/REPLACE_WITH_VIDEO_ID"
+  },
+  "approach": {
+    "heading": "Nuestro Enfoque",
+    "intro": "Nuestras experiencias vocales están estratégicamente orientadas a entornos corporativos que comprenden que el rendimiento sostenible comienza por el cuidado del equipo.",
+    "pillars": [
+      {
+        "title": "Productividad Saludable",
+        "body": "El cuidado del equipo va más allá del bienestar: es la base de un rendimiento sólido. Trabajamos en la prevención del burnout y la gestión del estrés, fortaleciendo la claridad mental, la resiliencia y la colaboración dentro de los equipos."
+      },
+      {
+        "title": "Creatividad Aplicada",
+        "body": "Activamos la creatividad como una herramienta para fortalecer la innovación, la adaptabilidad y la resolución de situaciones complejas."
+      },
+      {
+        "title": "Fundamento Científico",
+        "body": "Nuestras sesiones se fundamentan en principios de musicoterapia y regulación del sistema nervioso, aplicados de forma estructurada para fortalecer la cohesión, la comunicación y la confianza dentro de los equipos."
+      }
+    ],
+    "image": "/images/enfoque.jpg",
+    "imageAlt": "Sesión vocal grupal"
+  },
+  "testimonials": [
+    {
+      "quote": "Fue una forma nueva de conectar con mi cuerpo y emociones en un espacio divertido y seguro. Trabajar en grupo hizo que todos nos sintiéramos cómodos y realmente conectados.",
+      "authorName": "Dylan",
+      "authorRole": "Programador"
+    },
+    {
+      "quote": "Un encuentro bellísimo y cuidado que permite autoconocimiento y disfrute a través de la voz y la música, tanto para quienes tienen experiencia como para quienes nunca han explorado su voz.",
+      "authorName": "Amina",
+      "authorRole": "Project Manager"
+    },
+    {
+      "quote": "Entré con vergüenza y salí sintiéndome cómodo, acompañado y profundamente conectado con mi voz y con el grupo. Un espacio hermoso, seguro y lleno de juego.",
+      "authorName": "Telio",
+      "authorRole": "Productor Musical"
+    }
+  ],
+  "contact": {
+    "heading": "Lleva Sonara a tu equipo o comunidad.",
+    "body": "Ponte en contacto con nosotros para diseñar una experiencia vocal personalizada que impulse la cultura creativa y el bienestar mental de tu organización.",
+    "formHeading": "Contáctanos",
+    "formBody": "Nos encantaría conocerte y saber cómo podemos acompañarte. Cuéntanos qué estás buscando y te contactaremos con la máxima brevedad.",
+    "labelName": "Nombre y apellidos",
+    "labelOrg": "Nombre de la organización",
+    "labelEmail": "Correo de contacto",
+    "labelMessage": "Mensaje",
+    "submitText": "Enviar",
+    "email": "info@sonaravocalexperiences.com",
+    "phone": "(+34) 722 61 61 89",
+    "linkedinUrl": "https://linkedin.com/company/sonara-vocal-experiences",
+    "labelWorkshops": "TALLERES Y RESERVAS",
+    "labelDirect": "ATENCIÓN DIRECTA",
+    "labelLinkedin": "SÍGUENOS EN LINKEDIN"
+  },
+  "footer": {
+    "marqueeText": "VOCAL EXPERIENCES FOR WELLBEING ··· SONARA ··· VOCAL EXPERIENCES FOR WELLBEING ··· SONARA ···",
+    "copyright": "© 2026 Sonara - Vocal Experiences for Well-Being. All rights reserved."
+  }
+}

@@ -1,0 +1,29 @@
+---
+interface Props {
+  headline: string;
+  subtitle: string;
+  body: string;
+  ctaText: string;
+  ctaUrl: string;
+}
+
+const { headline, subtitle, body, ctaText, ctaUrl } = Astro.props;
+---
+
+<section class="min-h-screen bg-sage flex flex-col items-center justify-center text-center px-6 py-32">
+  <h1 class="text-[clamp(5rem,18vw,14rem)] font-black leading-none tracking-widest text-cream mb-4">
+    {headline}
+  </h1>
+  <h2 class="text-[clamp(1.5rem,4vw,3rem)] font-bold text-dark mb-8 max-w-3xl leading-tight">
+    {subtitle}
+  </h2>
+  <p class="text-base md:text-lg text-cream max-w-xl leading-relaxed mb-12">
+    {body}
+  </p>
+  <a
+    href={ctaUrl}
+    class="inline-block bg-cream text-dark font-semibold tracking-widest text-sm px-10 py-4 rounded-full hover:bg-white transition-colors"
+  >
+    {ctaText}
+  </a>
+</section>

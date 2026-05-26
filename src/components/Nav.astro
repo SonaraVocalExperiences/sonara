@@ -1,0 +1,32 @@
+---
+interface Props {
+  locale: string;
+  contactLabel: string;
+  approachLabel: string;
+}
+
+const { locale, contactLabel, approachLabel } = Astro.props;
+
+const localeUrl = (l: string) => (l === 'es' ? '/' : `/${l}`);
+const langs = [
+  { code: 'es', label: 'ES' },
+  { code: 'ca', label: 'CA' },
+  { code: 'en', label: 'ENG' },
+];
+---
+
+<nav
+  class="fixed top-0 left-0 right-0 z-50 flex justify-end items-center gap-8 px-8 py-6 text-sm font-medium tracking-wide"
+>
+  <a href="#enfoque" class="hover:opacity-70 transition-opacity">{approachLabel}</a>
+  <a href="#contacto" class="hover:opacity-70 transition-opacity">{contactLabel}</a>
+  {
+    langs
+      .filter((l) => l.code !== locale)
+      .map((l) => (
+        <a href={localeUrl(l.code)} class="hover:opacity-70 transition-opacity">
+          {l.label}
+        </a>
+      ))
+  }
+</nav>

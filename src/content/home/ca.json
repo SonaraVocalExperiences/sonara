@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "approach": "El nostre enfocament",
+    "contact": "Contacta'ns"
+  },
+  "hero": {
+    "headline": "SONARA",
+    "subtitle": "Vocal Experiences for Wellbeing",
+    "body": "Dissenyem i facilitem experiències vocals basades en el cant i la musicoteràpia per regular l'estrès, prevenir el burnout i enfortir la comunicació, la cohesió i el rendiment en equips corporatius.",
+    "ctaText": "RESERVA LA TEVA SESSIÓ",
+    "ctaUrl": "#contacto"
+  },
+  "video": {
+    "url": "https://www.youtube.com/embed/REPLACE_WITH_VIDEO_ID"
+  },
+  "approach": {
+    "heading": "El Nostre Enfocament",
+    "intro": "Les nostres experiències vocals estan estratègicament orientades a entorns corporatius que comprenen que el rendiment sostenible comença per la cura de l'equip.",
+    "pillars": [
+      {
+        "title": "Productivitat Saludable",
+        "body": "La cura de l'equip va més enllà del benestar: és la base d'un rendiment sòlid. Treballem en la prevenció del burnout i la gestió de l'estrès, enfortint la claredat mental, la resiliència i la col·laboració dins dels equips."
+      },
+      {
+        "title": "Creativitat Aplicada",
+        "body": "Activem la creativitat com una eina per enfortir la innovació, l'adaptabilitat i la resolució de situacions complexes."
+      },
+      {
+        "title": "Fonament Científic",
+        "body": "Les nostres sessions es fonamenten en principis de musicoteràpia i regulació del sistema nerviós, aplicats de forma estructurada per enfortir la cohesió, la comunicació i la confiança dins dels equips."
+      }
+    ],
+    "image": "/images/enfoque.jpg",
+    "imageAlt": "Sessió vocal grupal"
+  },
+  "testimonials": [
+    {
+      "quote": "Va ser una forma nova de connectar amb el meu cos i emocions en un espai divertit i segur. Treballar en grup va fer que tots ens sentíssim còmodes i realment connectats.",
+      "authorName": "Dylan",
+      "authorRole": "Programador"
+    },
+    {
+      "quote": "Una trobada bellíssima i acurada que permet l'autoconeixement i el gaudi a través de la veu i la música, tant per a qui té experiència com per a qui mai ha explorat la seva veu.",
+      "authorName": "Amina",
+      "authorRole": "Project Manager"
+    },
+    {
+      "quote": "Vaig entrar amb vergonya i vaig sortir sentint-me còmode, acompanyat i profundament connectat amb la meva veu i amb el grup. Un espai bonic, segur i ple de joc.",
+      "authorName": "Telio",
+      "authorRole": "Productor Musical"
+    }
+  ],
+  "contact": {
+    "heading": "Porta Sonara al teu equip o comunitat.",
+    "body": "Posa't en contacte amb nosaltres per dissenyar una experiència vocal personalitzada que impulsi la cultura creativa i el benestar mental de la teva organització.",
+    "formHeading": "Contacta'ns",
+    "formBody": "Ens encantaria conèixer-te i saber com et podem acompanyar. Explica'ns què estàs buscant i et contactarem el més aviat possible.",
+    "labelName": "Nom i cognoms",
+    "labelOrg": "Nom de l'organització",
+    "labelEmail": "Correu de contacte",
+    "labelMessage": "Missatge",
+    "submitText": "Enviar",
+    "email": "info@sonaravocalexperiences.com",
+    "phone": "(+34) 722 61 61 89",
+    "linkedinUrl": "https://linkedin.com/company/sonara-vocal-experiences",
+    "labelWorkshops": "TALLERS I RESERVES",
+    "labelDirect": "ATENCIÓ DIRECTA",
+    "labelLinkedin": "SEGUEIX-NOS A LINKEDIN"
+  },
+  "footer": {
+    "marqueeText": "VOCAL EXPERIENCES FOR WELLBEING ··· SONARA ··· VOCAL EXPERIENCES FOR WELLBEING ··· SONARA ···",
+    "copyright": "© 2026 Sonara - Vocal Experiences for Well-Being. All rights reserved."
+  }
+}

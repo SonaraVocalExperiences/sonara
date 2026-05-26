@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "approach": "Our approach",
+    "contact": "Contact us"
+  },
+  "hero": {
+    "headline": "SONARA",
+    "subtitle": "Vocal Experiences for Wellbeing",
+    "body": "We design and facilitate vocal experiences based on singing and music therapy to regulate stress, prevent burnout, and strengthen communication, cohesion, and performance in corporate teams.",
+    "ctaText": "BOOK YOUR SESSION",
+    "ctaUrl": "#contacto"
+  },
+  "video": {
+    "url": "https://www.youtube.com/embed/REPLACE_WITH_VIDEO_ID"
+  },
+  "approach": {
+    "heading": "Our Approach",
+    "intro": "Our vocal experiences are strategically oriented towards corporate environments that understand that sustainable performance begins with team care.",
+    "pillars": [
+      {
+        "title": "Healthy Productivity",
+        "body": "Team care goes beyond wellbeing: it is the foundation of solid performance. We work on burnout prevention and stress management, strengthening mental clarity, resilience, and collaboration within teams."
+      },
+      {
+        "title": "Applied Creativity",
+        "body": "We activate creativity as a tool to strengthen innovation, adaptability, and the resolution of complex situations."
+      },
+      {
+        "title": "Scientific Foundation",
+        "body": "Our sessions are grounded in principles of music therapy and nervous system regulation, applied in a structured way to strengthen cohesion, communication, and trust within teams."
+      }
+    ],
+    "image": "/images/approach.jpg",
+    "imageAlt": "Group vocal session"
+  },
+  "testimonials": [
+    {
+      "quote": "It was a new way of connecting with my body and emotions in a fun and safe space. Working in a group meant we all felt comfortable and truly connected.",
+      "authorName": "Dylan",
+      "authorRole": "Programmer"
+    },
+    {
+      "quote": "A beautiful and caring encounter that allows self-knowledge and enjoyment through voice and music, both for those with experience and those who have never explored their voice.",
+      "authorName": "Amina",
+      "authorRole": "Project Manager"
+    },
+    {
+      "quote": "I came in with shame and left feeling comfortable, accompanied and deeply connected to my voice and the group. A beautiful, safe and playful space.",
+      "authorName": "Telio",
+      "authorRole": "Music Producer"
+    }
+  ],
+  "contact": {
+    "heading": "Bring Sonara to your team or community.",
+    "body": "Get in touch with us to design a personalised vocal experience that drives creative culture and mental wellbeing in your organisation.",
+    "formHeading": "Contact Us",
+    "formBody": "We would love to meet you and understand how we can support you. Tell us what you are looking for and we will be in touch as soon as possible.",
+    "labelName": "Full name",
+    "labelOrg": "Organisation name",
+    "labelEmail": "Contact email",
+    "labelMessage": "Message",
+    "submitText": "Send",
+    "email": "info@sonaravocalexperiences.com",
+    "phone": "(+34) 722 61 61 89",
+    "linkedinUrl": "https://linkedin.com/company/sonara-vocal-experiences",
+    "labelWorkshops": "WORKSHOPS & BOOKINGS",
+    "labelDirect": "DIRECT CONTACT",
+    "labelLinkedin": "FOLLOW US ON LINKEDIN"
+  },
+  "footer": {
+    "marqueeText": "VOCAL EXPERIENCES FOR WELLBEING ··· SONARA ··· VOCAL EXPERIENCES FOR WELLBEING ··· SONARA ···",
+    "copyright": "© 2026 Sonara - Vocal Experiences for Well-Being. All rights reserved."
+  }
+}

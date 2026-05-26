@@ -1,0 +1,14 @@
+---
+interface Props {
+  email: string;
+  phone: string;
+  copyright: string;
+}
+
+const { email, phone, copyright } = Astro.props;
+---
+
+<footer class="bg-cream py-8 px-6 text-center text-xs text-dark/50 space-y-2">
+  <p>{email} | {phone}</p>
+  <p>{copyright}</p>
+</footer>

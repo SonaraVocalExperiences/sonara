@@ -1,0 +1,18 @@
+---
+interface Props {
+  url: string;
+}
+
+const { url } = Astro.props;
+---
+
+<section class="bg-sage flex items-center justify-center py-24 px-6">
+  <div class="relative w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl bg-dark aspect-[9/16]">
+    <iframe
+      src={url}
+      title="Sonara video"
+      class="absolute inset-0 w-full h-full"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+  </div>
+</section>
