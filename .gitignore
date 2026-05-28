@@ -3,6 +3,7 @@ dist/
 .astro/
 .env
 .env.*
-!.env.example
+.pnpm-store/
+.netlify
 .claude/settings.local.json
 .DS_Store

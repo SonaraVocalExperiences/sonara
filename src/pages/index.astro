@@ -1,24 +1,11 @@
 ---
-// Spanish — default locale, served at /
-import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import Hero from '../components/Hero.astro';
-import VideoSection from '../components/VideoSection.astro';
-import Approach from '../components/Approach.astro';
-import Testimonials from '../components/Testimonials.astro';
-import Contact from '../components/Contact.astro';
-import Marquee from '../components/Marquee.astro';
-import Footer from '../components/Footer.astro';
-import content from '../content/home/es.json';
+export const prerender = false;
+
+import HomePageView from '../components/HomePageView.astro';
+import { getHomeContent } from '../lib/sanity/getHomeContent';
+import { isPreviewRequest } from '../lib/sanity/preview';
+
+const preview = isPreviewRequest(Astro.cookies);
 ---
 
-<Layout lang="es">
-  <Nav locale="es" approachLabel={content.nav.approach} contactLabel={content.nav.contact} />
-  <Hero {...content.hero} />
-  <VideoSection url={content.video.url} />
-  <Approach {...content.approach} />
-  <Testimonials items={content.testimonials} />
-  <Contact {...content.contact} />
-  <Marquee text={content.footer.marqueeText} />
-  <Footer email={content.contact.email} phone={content.contact.phone} copyright={content.footer.copyright} />
-</Layout>
+<HomePageView locale="es" content={await getHomeContent('es', { preview })} />

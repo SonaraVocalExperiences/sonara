@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import VideoSection from '../components/VideoSection.astro';
+import Approach from '../components/Approach.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Contact from '../components/Contact.astro';
+import Marquee from '../components/Marquee.astro';
+import Footer from '../components/Footer.astro';
+import type { HomeContent } from '../lib/sanity/getHomeContent';
+import type { SiteLocale } from '../lib/sanity/locale';
+
+interface Props {
+  locale: SiteLocale;
+  content: HomeContent;
+}
+
+const { locale, content } = Astro.props;
+---
+
+<Layout lang={locale}>
+  <Nav locale={locale} approachLabel={content.nav.approach} contactLabel={content.nav.contact} />
+  <Hero {...content.hero} />
+  <VideoSection url={content.video.url} />
+  <Approach {...content.approach} />
+  <Testimonials items={content.testimonials} />
+  <Contact {...content.contact} />
+  <Marquee text={content.footer.marqueeText} />
+  <Footer email={content.contact.email} phone={content.contact.phone} copyright={content.footer.copyright} />
+</Layout>

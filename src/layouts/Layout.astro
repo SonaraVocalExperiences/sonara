@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import { VisualEditing } from '@sanity/astro/visual-editing';
+import { isPreviewRequest } from '../lib/sanity/preview';
 
 interface Props {
   title?: string;
@@ -7,6 +9,7 @@ interface Props {
 }
 
 const { title = 'Sonara — Vocal Experiences for Wellbeing', lang } = Astro.props;
+const visualEditingEnabled = isPreviewRequest(Astro.cookies);
 ---
 
 <!doctype html>
@@ -26,5 +29,6 @@ const { title = 'Sonara — Vocal Experiences for Wellbeing', lang } = Astro.pro
   </head>
   <body class="bg-cream text-dark font-sans antialiased">
     <slot />
+    <VisualEditing enabled={visualEditingEnabled} />
   </body>
 </html>
