@@ -1,6 +1,6 @@
 {
   "nav": {
-    "approach": "Our approach",
+    "approach": "Our approach TEST",
     "contact": "Contact us"
   },
   "hero": {
@@ -51,21 +51,21 @@
     }
   ],
   "contact": {
-    "heading": "Bring Sonara to your team or community.",
     "body": "Get in touch with us to design a personalised vocal experience that drives creative culture and mental wellbeing in your organisation.",
-    "formHeading": "Contact Us",
-    "formBody": "We would love to meet you and understand how we can support you. Tell us what you are looking for and we will be in touch as soon as possible.",
-    "labelName": "Full name",
-    "labelOrg": "Organisation name",
-    "labelEmail": "Contact email",
-    "labelMessage": "Message",
+    "heading": "Bring Sonara to your team or community.",
     "submitText": "Send",
-    "email": "info@sonaravocalexperiences.com",
+    "formBody": "We would love to meet you and understand how we can support you. Tell us what you are looking for and we will be in touch as soon as possible.",
+    "labelEmail": "Contact email",
     "phone": "(+34) 722 61 61 89",
+    "labelOrg": "Organisation name",
     "linkedinUrl": "https://linkedin.com/company/sonara-vocal-experiences",
+    "labelLinkedin": "FOLLOW US ON LINKEDIN",
+    "labelMessage": "Message",
     "labelWorkshops": "WORKSHOPS & BOOKINGS",
+    "email": "info@sonaravocalexperiences.com",
     "labelDirect": "DIRECT CONTACT",
-    "labelLinkedin": "FOLLOW US ON LINKEDIN"
+    "formHeading": "Contact Us",
+    "labelName": "Full name"
   },
   "footer": {
     "marqueeText": "VOCAL EXPERIENCES FOR WELLBEING ··· SONARA ··· VOCAL EXPERIENCES FOR WELLBEING ··· SONARA ···",
