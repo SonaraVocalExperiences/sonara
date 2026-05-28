@@ -4,6 +4,11 @@
 backend:
   name: git-gateway
   branch: main
+  squash_merges: true
+
+# Draft → In Review → Ready before merging to main (creates PRs per change).
+# Not supported with local_backend — index.html falls back to simple mode on localhost.
+publish_mode: editorial_workflow
 
 local_backend: true
 
