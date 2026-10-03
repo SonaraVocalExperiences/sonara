@@ -8,24 +8,42 @@ import Testimonials from '../components/Testimonials.astro';
 import Contact from '../components/Contact.astro';
 import Marquee from '../components/Marquee.astro';
 import Footer from '../components/Footer.astro';
-import type { HomeContent } from '../lib/sanity/getHomeContent';
-import type { SiteLocale } from '../lib/sanity/locale';
+import { stegaClean } from '@sanity/client/stega';
+import { siteName } from '../../sanity.constants';
+import { getHomeContent } from '../lib/sanity/getHomeContent';
+import { imageUrlBuilder } from '../lib/sanity/image';
+import { siteLocale } from '../lib/sanity/locale';
+import { isPreview } from '../lib/sanity/preview';
 
-interface Props {
-  locale: SiteLocale;
-  content: HomeContent;
-}
+const content = await getHomeContent(siteLocale(Astro.currentLocale), isPreview(Astro.cookies));
+const { seo, contact } = content;
 
-const { locale, content } = Astro.props;
+const shareImage = seo?.image?.asset
+  ? imageUrlBuilder.image(seo.image).width(1200).height(630).fit('crop').auto('format').url()
+  : undefined;
+
+const organization = stegaClean({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteName,
+  url: Astro.site?.href,
+  description: seo?.description || undefined,
+  email: contact?.email,
+  telephone: contact?.phone,
+  sameAs: contact?.linkedinUrl ? [contact.linkedinUrl] : undefined,
+});
+// Escape `<` so content can never close the script tag early.
+const organizationJson = JSON.stringify(organization).replace(/</g, '\\u003c');
 ---
 
-<Layout lang={locale}>
-  <Nav locale={locale} approachLabel={content.nav.approach} contactLabel={content.nav.contact} />
-  <Hero {...content.hero} />
-  <VideoSection url={content.video.url} />
-  <Approach {...content.approach} />
-  <Testimonials items={content.testimonials} />
-  <Contact {...content.contact} />
-  <Marquee text={content.footer.marqueeText} />
-  <Footer email={content.contact.email} phone={content.contact.phone} copyright={content.footer.copyright} />
+<Layout title={seo?.title} description={seo?.description} image={shareImage} imageAlt={content.approach?.imageAlt}>
+  <script slot="head" type="application/ld+json" set:html={organizationJson} />
+  <Nav nav={content.nav ?? {}} />
+  <Hero hero={content.hero ?? {}} />
+  <VideoSection video={content.video ?? {}} />
+  <Approach approach={content.approach ?? {}} />
+  <Testimonials items={content.testimonials ?? []} />
+  <Contact contact={content.contact ?? {}} />
+  <Marquee text={content.footer?.marqueeText ?? ''} />
+  <Footer contact={content.contact ?? {}} footer={content.footer ?? {}} />
 </Layout>

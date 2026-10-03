@@ -5,15 +5,9 @@ import { structureTool } from 'sanity/structure';
 import { internationalizedArray } from 'sanity-plugin-internationalized-array';
 import { schemaTypes } from './schemaTypes';
 import { structure } from './structure';
-import { projectId, dataset } from './sanity.constants';
+import { projectId, dataset, locales, defaultLocale } from './sanity.constants';
 
-export const locales = [
-  { id: 'es', title: 'Español' },
-  { id: 'ca', title: 'Català' },
-  { id: 'en', title: 'English' },
-] as const;
-
-export type SiteLocale = (typeof locales)[number]['id'];
+const languageConfig = locales.map((l) => ({ id: l.id, title: l.title }));
 
 export default defineConfig({
   name: 'sonara',
@@ -24,7 +18,6 @@ export default defineConfig({
     structureTool({ structure }),
     presentationTool({
       previewUrl: {
-        origin: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4321',
         previewMode: {
           enable: '/api/draft-mode/enable',
           disable: '/api/draft-mode/disable',
@@ -32,16 +25,18 @@ export default defineConfig({
       },
     }),
     internationalizedArray({
-      languages: locales,
-      defaultLanguages: ['es'],
+      languages: languageConfig,
+      defaultLanguages: [defaultLocale],
       fieldTypes: ['string', 'text'],
     }),
     languageFilter({
-      supportedLanguages: locales,
-      defaultLanguages: ['es'],
+      supportedLanguages: languageConfig,
+      defaultLanguages: [defaultLocale],
       documentTypes: ['homePage'],
     }),
   ],
+  releases: { enabled: false },
+  scheduledDrafts: { enabled: false },
   schema: {
     types: schemaTypes,
   },

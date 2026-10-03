@@ -1,33 +1,31 @@
 import { sanityClient } from 'sanity:client';
-import type { HomeContent } from './queries';
+
+import type { HomePageQueryResult } from '../../../sanity.types';
+import { localize, type Localized, type SiteLocale } from './locale';
 import { homePageQuery } from './queries';
-import type { SiteLocale } from './locale';
 
-export type { HomeContent } from './queries';
+export type HomeContent = Localized<NonNullable<HomePageQueryResult>>;
 
-interface GetHomeContentOptions {
-  preview?: boolean;
-}
+const token = import.meta.env.SANITY_API_READ_TOKEN;
 
-export async function getHomeContent(
-  locale: SiteLocale,
-  options: GetHomeContentOptions = {},
-): Promise<HomeContent> {
-  const { preview = false } = options;
+/** Fetch the homepage singleton resolved to one locale. In preview mode we read
+ *  drafts with the read token and turn on stega so Visual Editing overlays can map
+ *  values back to their fields; otherwise we hit the CDN with published content. */
+export async function getHomeContent(locale: SiteLocale, preview: boolean): Promise<HomeContent> {
+  const client = preview
+    ? sanityClient.withConfig({
+        token,
+        useCdn: false,
+        perspective: 'drafts',
+        stega: { enabled: true, studioUrl: '/admin' },
+      })
+    : sanityClient;
 
-  const content = await sanityClient.fetch<HomeContent | null>(
-    homePageQuery(),
-    { locale },
-    preview
-      ? { perspective: 'drafts', stega: true, useCdn: false }
-      : { perspective: 'published', stega: false, useCdn: false },
-  );
+  const doc = await client.fetch(homePageQuery);
 
-  if (!content) {
-    throw new Error(
-      'Homepage content not found in Sanity. Open /admin, edit Homepage, publish, then rebuild.',
-    );
+  if (!doc) {
+    throw new Error('Homepage content not found in Sanity. Open /admin, edit Homepage, and publish.');
   }
 
-  return content;
+  return localize(doc, locale);
 }

@@ -1,11 +1,5 @@
 ---
-export const prerender = false;
-
 import HomePageView from '../../components/HomePageView.astro';
-import { getHomeContent } from '../../lib/sanity/getHomeContent';
-import { isPreviewRequest } from '../../lib/sanity/preview';
-
-const preview = isPreviewRequest(Astro.cookies);
 ---
 
-<HomePageView locale="ca" content={await getHomeContent('ca', { preview })} />
+<HomePageView />

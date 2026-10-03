@@ -1,63 +1,58 @@
+// @ts-check
+import { defineConfig } from 'astro/config';
 import netlify from '@astrojs/netlify';
 import react from '@astrojs/react';
-import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 import sanity from '@sanity/astro';
-import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+import { fileURLToPath } from 'node:url';
 import { loadEnv } from 'vite';
-import { projectId, dataset } from './sanity.constants.ts';
 
-const env = loadEnv(process.env.MODE ?? process.env.NODE_ENV ?? 'development', process.cwd(), '');
+import { projectId, dataset, locales, defaultLocale } from './sanity.constants';
 
-const token = env.SANITY_API_READ_TOKEN ?? process.env.SANITY_API_READ_TOKEN;
+// rolldown-vite drops `react-compiler-runtime`'s named exports, breaking Visual Editing.
+// The shim re-exports them; see src/shims/react-compiler-runtime.mjs.
+const reactCompilerRuntimeShim = fileURLToPath(new URL('./src/shims/react-compiler-runtime.mjs', import.meta.url));
 
-if (!token) {
-  throw new Error(
-    'Missing SANITY_API_READ_TOKEN. Add a Viewer token from sanity.io/manage → API → Tokens to .env (local) or Netlify env vars (production).',
+// Config runs before Astro loads `.env`. The dataset is public, so only draft preview
+// needs the token: warn, don't fail, so CI can run without it.
+const env = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), '');
+if (!env.SANITY_API_READ_TOKEN) {
+  console.warn(
+    'SANITY_API_READ_TOKEN is not set, so draft-mode preview will not work. Add a Viewer token from sanity.io/manage → API → Tokens to .env locally and to the Netlify site environment.'
   );
 }
 
+// https://astro.build/config
 export default defineConfig({
+  site: 'https://www.sonaravocalexperiences.com',
   output: 'server',
   adapter: netlify(),
-  vite: {
-    plugins: [tailwindcss()],
-    envPrefix: ['PUBLIC_'],
-    resolve: {
-      dedupe: ['react', 'react-dom', 'react-is', 'styled-components'],
-    },
-    optimizeDeps: {
-      include: [
-        '@sanity/visual-editing',
-        '@sanity/visual-editing/react',
-        'react/compiler-runtime',
-        'lodash/isObject.js',
-        'lodash/groupBy.js',
-        'lodash/keyBy.js',
-        'lodash/partition.js',
-        'lodash/sortedIndex.js',
-      ],
-    },
+  i18n: {
+    defaultLocale,
+    locales: locales.map((l) => l.id),
+    routing: { prefixDefaultLocale: false },
   },
   integrations: [
     sanity({
       projectId,
       dataset,
-      token,
-      useCdn: false,
       apiVersion: '2025-05-29',
+      useCdn: true,
       studioBasePath: '/admin',
-      studioRouterHistory: 'hash',
-      stega: {
-        studioUrl: '/admin',
-      },
+      stega: { studioUrl: '/admin' },
     }),
     react(),
+    sitemap(),
   ],
-  i18n: {
-    defaultLocale: 'es',
-    locales: ['es', 'ca', 'en'],
-    routing: {
-      prefixDefaultLocale: false,
+  vite: {
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: [{ find: /^react-compiler-runtime$/, replacement: reactCompilerRuntimeShim }],
+    },
+    // Pre-bundle Visual Editing so the shim is inlined into it.
+    optimizeDeps: {
+      include: ['@sanity/visual-editing', '@sanity/visual-editing/react'],
     },
   },
 });

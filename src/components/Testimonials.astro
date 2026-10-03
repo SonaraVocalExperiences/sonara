@@ -1,12 +1,8 @@
 ---
-interface Testimonial {
-  quote: string;
-  authorName: string;
-  authorRole: string;
-}
+import type { HomeContent } from '../lib/sanity/getHomeContent';
 
 interface Props {
-  items: Testimonial[];
+  items: NonNullable<HomeContent['testimonials']>;
 }
 
 const { items } = Astro.props;
@@ -14,17 +10,15 @@ const { items } = Astro.props;
 
 <section class="bg-sage py-24 px-6">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-    {
-      items.map((t) => (
-        <div class="flex flex-col justify-between">
-          <p class="text-2xl md:text-3xl font-black text-dark leading-tight mb-8">"{t.quote}"</p>
-          <div>
-            <p class="text-sm font-bold text-dark">
-              {t.authorName}, {t.authorRole}
-            </p>
-          </div>
+    {items.map((t) => (
+      <div class="flex flex-col justify-between">
+        <p class="text-2xl md:text-3xl font-black text-dark leading-tight mb-8">"{t.quote}"</p>
+        <div>
+          <p class="text-sm font-bold text-dark">
+            {t.authorName}, {t.authorRole}
+          </p>
         </div>
-      ))
-    }
+      </div>
+    ))}
   </div>
 </section>

@@ -1,31 +1,61 @@
 ---
+import '@fontsource-variable/inter';
 import '../styles/global.css';
+import { stegaClean } from '@sanity/client/stega';
 import { VisualEditing } from '@sanity/astro/visual-editing';
-import { isPreviewRequest } from '../lib/sanity/preview';
+import { siteName } from '../../sanity.constants';
+import { defaultLocale, localeOf, localePath, locales, type SiteLocale } from '../lib/sanity/locale';
+import { isPreview } from '../lib/sanity/preview';
 
 interface Props {
   title?: string;
-  lang: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
 }
 
-const { title = 'Sonara — Vocal Experiences for Wellbeing', lang } = Astro.props;
-const visualEditingEnabled = isPreviewRequest(Astro.cookies);
+const title = stegaClean(Astro.props.title) || siteName;
+const description = stegaClean(Astro.props.description);
+const image = stegaClean(Astro.props.image);
+const imageAlt = stegaClean(Astro.props.imageAlt);
+const current = localeOf(Astro.currentLocale);
+const urlFor = (id: SiteLocale) => new URL(localePath(id), Astro.site).href;
+const ogLocale = (hreflang: string) => hreflang.replace('-', '_');
+const visualEditingEnabled = isPreview(Astro.cookies);
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={current.hreflang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Sonara — Vocal Experiences for Wellbeing" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
-      rel="stylesheet"
-    />
     <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={urlFor(current.id)} />
+    {locales.map((l) => (
+      <link rel="alternate" hreflang={l.hreflang} href={urlFor(l.id)} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={urlFor(defaultLocale)} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={urlFor(current.id)} />
+    <meta property="og:locale" content={ogLocale(current.hreflang)} />
+    {locales
+      .filter((l) => l.id !== current.id)
+      .map((l) => (
+        <meta property="og:locale:alternate" content={ogLocale(l.hreflang)} />
+      ))}
+    {image && <meta property="og:image" content={image} />}
+    {image && <meta property="og:image:width" content="1200" />}
+    {image && <meta property="og:image:height" content="630" />}
+    {image && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+
+    <slot name="head" />
   </head>
   <body class="bg-cream text-dark font-sans antialiased">
     <slot />
