@@ -6,7 +6,7 @@ locale at `/`, with `/ca` and `/en`.
 
 ## Toolchain
 
-Node 24 (`.nvmrc`) and pnpm 12.8.1 (`packageManager`), installed standalone.
+Node 24 (`.nvmrc`) and pnpm 12.9.1 (`packageManager`), installed standalone.
 
 Verify every change with `pnpm lint`, `pnpm check`, `pnpm format:check`, and `pnpm build`. All
 must pass. CI (`.github/workflows/ci.yml`) runs all but the build, which Netlify covers.

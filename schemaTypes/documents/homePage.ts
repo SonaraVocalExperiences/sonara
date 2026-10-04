@@ -9,6 +9,7 @@ const section = (name: string, title: string, fields: ReturnType<typeof defineFi
     group,
     options: { collapsible: true, collapsed: false },
     fields,
+    preview: { prepare: () => ({ title }) },
   });
 
 export const homePage = defineType({
@@ -221,7 +222,6 @@ export const homePage = defineType({
       defineField({
         name: 'copyright',
         title: 'Copyright',
-        description: 'Business name and "all rights reserved" text. Do not include © or the year.',
         type: 'internationalizedArrayString',
         validation: (rule) => rule.required(),
       }),

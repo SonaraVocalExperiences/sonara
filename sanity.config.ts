@@ -1,5 +1,4 @@
-import { languageFilter } from '@sanity/language-filter';
-import { defineConfig } from 'sanity';
+import { defineConfig, defineSingleton } from 'sanity';
 import { presentationTool } from 'sanity/presentation';
 import { structureTool } from 'sanity/structure';
 import { internationalizedArray } from 'sanity-plugin-internationalized-array';
@@ -28,13 +27,12 @@ export default defineConfig({
       languages: languageConfig,
       defaultLanguages: [defaultLocale],
       fieldTypes: ['string', 'text'],
-    }),
-    languageFilter({
-      supportedLanguages: languageConfig,
-      defaultLanguages: [defaultLocale],
-      documentTypes: ['homePage'],
+      languageFilter: { documentTypes: ['homePage'] },
     }),
   ],
+  document: {
+    singletons: [defineSingleton({ documentId: 'homePage', schemaType: 'homePage', title: 'Homepage' })],
+  },
   releases: { enabled: false },
   scheduledDrafts: { enabled: false },
   schema: {
