@@ -53,7 +53,7 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   and `src/lib/sanity/locale.ts`. Never hardcode a locale code elsewhere. Components get the
   current locale from `siteLocale(Astro.currentLocale)`, not from props. Short ids (`es`, `ca`,
   `en`) are used in URLs and Sanity `language` values; each locale's regional `hreflang`
-  (`es-ES`, `ca-ES`, `en-GB`) is used only for `<html lang>` and the canonical/alternate links in
+  (`es-ES`, `ca-ES`, `en-US`) is used only for `<html lang>` and the canonical/alternate links in
   `Layout.astro`, so changing a region never needs a content migration.
 - Content model: one `homePage` singleton (`schemaTypes/documents/homePage.ts`) with one collapsible
   object per page section (`seo`, `nav`, `hero`, `video`, `approach`, `contact`, `footer`) plus the

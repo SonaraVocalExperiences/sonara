@@ -11,7 +11,7 @@ export const siteName = 'Sonara Vocal Experiences';
 export const locales = [
   { id: 'es', hreflang: 'es-ES', title: 'Español', label: 'ES' },
   { id: 'ca', hreflang: 'ca-ES', title: 'Català', label: 'CA' },
-  { id: 'en', hreflang: 'en-GB', title: 'English', label: 'ENG' },
+  { id: 'en', hreflang: 'en-US', title: 'English', label: 'ENG' },
 ] as const;
 
 export type LocaleId = (typeof locales)[number]['id'];
