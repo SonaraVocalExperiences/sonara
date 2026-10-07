@@ -1,5 +1,7 @@
 ---
 import type { HomeContent } from '../lib/sanity/getHomeContent';
+import { localePath, siteLocale } from '../lib/sanity/locale';
+import Logo from './Logo.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 
 interface Props {
@@ -7,16 +9,32 @@ interface Props {
 }
 
 const { approachLabel, contactLabel } = Astro.props.nav;
+const home = localePath(siteLocale(Astro.currentLocale));
+const links = [
+  { href: '#enfoque', label: approachLabel },
+  { href: '#contacto', label: contactLabel },
+];
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center gap-8 px-8 py-3 bg-cream">
-  <nav class="flex items-center gap-8 text-sm font-medium tracking-wide">
-    <a href="#enfoque" class="hover:opacity-70 transition-opacity">
-      {approachLabel}
+<header class="fixed top-0 left-0 right-0 z-50 px-6 py-3 bg-cream">
+  <div class="mx-auto flex max-w-6xl items-center gap-4">
+    <a
+      href={home}
+      aria-current="page"
+      class="group press-ring -mx-pill flex min-h-12 items-center gap-3 px-pill font-normal tracking-tight"
+    >
+      <Logo class="size-7" />
+      <span>SONARA</span>
     </a>
-    <a href="#contacto" class="hover:opacity-70 transition-opacity">
-      {contactLabel}
-    </a>
-  </nav>
-  <LocaleSwitcher />
+    <nav class="flex items-center -space-x-1 text-sm font-medium">
+      {links.map(({ href, label }) => (
+        <a href={href} class="press-ring flex min-h-11 items-center px-pill">
+          <span class="tracking-wide -me-(--tracking-wide)">{label}</span>
+        </a>
+      ))}
+    </nav>
+    <div class="ml-auto -me-3">
+      <LocaleSwitcher />
+    </div>
+  </div>
 </header>

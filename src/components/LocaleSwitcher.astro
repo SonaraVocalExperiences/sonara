@@ -7,6 +7,8 @@
  * - Visible text is the abbreviation (aria-hidden, with an <abbr title> for WCAG 3.1.4); the
  *   accessible name is the language's own name in a visually hidden span, read in that language.
  * - State is shown by underline (links) vs semibold (current), never by color alone.
+ * - Keyboard focus shows the shared press-ring (a 4.6:1 border, which stands in for the browser
+ *   outline); hover keeps the underline only.
  * - Targets are at least 44×44px (2.5.5); every state keeps text contrast ≥ 7:1 (1.4.6).
  * - translate="no" keeps page translation from rewriting language names.
  */
@@ -27,7 +29,7 @@ const current = localeOf(Astro.currentLocale);
             <span class="sr-only">{l.name}</span>
           </span>
         ) : (
-          <a class="locale-switcher__item" href={localePath(l.id)} lang={l.hreflang} hreflang={l.hreflang}>
+          <a class="locale-switcher__item press-ring" href={localePath(l.id)} lang={l.hreflang} hreflang={l.hreflang}>
             <abbr class="locale-switcher__abbr" title={l.name} aria-hidden="true">
               {l.label}
             </abbr>
@@ -44,7 +46,6 @@ const current = localeOf(Astro.currentLocale);
     --locale-current: var(--color-dark); /* 14.91:1 on cream */
     --locale-muted: color-mix(in srgb, var(--color-dark) 75%, var(--color-cream)); /* 7.01:1 on cream */
     --locale-spacing: 0.04em;
-    margin-inline-end: -0.75rem;
   }
 
   .locale-switcher__list {
@@ -93,6 +94,7 @@ const current = localeOf(Astro.currentLocale);
   }
 
   a.locale-switcher__item {
+    border-radius: 9999px; /* keeps the ring and the focus outline round */
     font-weight: 450;
     color: var(--locale-muted);
   }
@@ -110,14 +112,9 @@ const current = localeOf(Astro.currentLocale);
     text-decoration-line: underline;
   }
 
-  a.locale-switcher__item:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: -3px;
-  }
-
   @media (prefers-reduced-motion: no-preference) {
     .locale-switcher__abbr {
-      transition: color 120ms ease-out;
+      transition: color var(--ring-duration) var(--ring-ease);
     }
   }
 </style>

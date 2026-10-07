@@ -1,9 +1,13 @@
 @import 'tailwindcss';
+@import './press-ring.css';
 
-@theme {
+@theme static {
   --color-sage: #8fa88a;
   --color-cream: #f0ede6;
   --color-dark: #1a1a18;
+
+  --duration-hover: 175ms; /* default for Tailwind's transition-* utilities and the ring */
+  --default-transition-duration: var(--duration-hover);
 
   --font-sans: 'Inter Variable', system-ui, sans-serif;
 }
