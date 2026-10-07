@@ -38,7 +38,7 @@ const organizationJson = JSON.stringify(organization).replace(/</g, '\\u003c');
 
 <Layout title={seo?.title} description={seo?.description} image={shareImage} imageAlt={content.approach?.imageAlt}>
   <script slot="head" type="application/ld+json" set:html={organizationJson} />
-  <Nav nav={content.nav ?? {}} />
+  <Nav nav={content.nav ?? {}} cta={{ text: content.hero?.ctaText, url: content.hero?.ctaUrl }} />
   <Hero hero={content.hero ?? {}} />
   <VideoSection video={content.video ?? {}} />
   <Approach approach={content.approach ?? {}} />

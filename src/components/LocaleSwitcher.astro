@@ -12,12 +12,18 @@
  * - Targets are at least 44×44px (2.5.5); every state keeps text contrast ≥ 7:1 (1.4.6).
  * - translate="no" keeps page translation from rewriting language names.
  */
-import { localeOf, localePath, locales } from '../lib/sanity/locale';
+import { localeOf, localePath, locales, messagesOf } from '../lib/sanity/locale';
 
 const current = localeOf(Astro.currentLocale);
 ---
 
-<nav class="locale-switcher" aria-label={current.navLabel} translate="no" tabindex="-1">
+<nav
+  class="locale-switcher"
+  data-locale-switcher
+  aria-label={messagesOf(Astro.currentLocale).switcherLabel}
+  translate="no"
+  tabindex="-1"
+>
   <ul class="locale-switcher__list">
     {locales.map((l) => (
       <li>
@@ -40,6 +46,18 @@ const current = localeOf(Astro.currentLocale);
     ))}
   </ul>
 </nav>
+
+<script>
+  // A switch swaps the page in place and drops focus, so one made from the switcher returns focus
+  // to it and Tab reaches the next language.
+  let fromSwitcher = false;
+  document.addEventListener('astro:before-preparation', (e) => {
+    fromSwitcher = !!e.sourceElement?.closest('[data-locale-switcher]');
+  });
+  document.addEventListener('astro:after-swap', () => {
+    if (fromSwitcher) document.querySelector<HTMLElement>('[data-locale-switcher]')?.focus({ preventScroll: true });
+  });
+</script>
 
 <style>
   .locale-switcher {

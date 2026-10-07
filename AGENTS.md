@@ -49,7 +49,9 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   `/admin/[...params]`. Don't set `studioRouterHistory: 'hash'`: hash mode only mounts `/admin`, so
   Visual Editing's "Open in Studio" links (`/admin/intent/...`, built from `stega.studioUrl`) 404.
 - `sanity.constants.ts` is the single source for project ID, dataset, and locales (ids, Studio
-  titles, nav labels; the first is the default), imported by `sanity.config.ts`, `astro.config.mjs`,
+  titles, switcher labels; the first is the default) plus `messages`, a dictionary keyed by locale
+  id of the few accessible names that have no visible text and so live in code, not Sanity
+  (`messagesOf(Astro.currentLocale)`). Both are imported by `sanity.config.ts`, `astro.config.mjs`,
   and `src/lib/sanity/locale.ts`. Never hardcode a locale code elsewhere. Components get the
   current locale from `siteLocale(Astro.currentLocale)`, not from props. Short ids (`es`, `ca`,
   `en`) are used in URLs and Sanity `language` values; each locale's regional `hreflang`

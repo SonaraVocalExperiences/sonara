@@ -14,6 +14,9 @@
  * shrinks to the border width, so the inner edge stays a pill at any width. Its colors clear 3:1
  * against cream, and a transparent outline keeps focus visible in forced-colors modes.
  *
+ * For a full-width target with a label-sized ring, put `press-ring-row` on the link and
+ * `press-ring-pill` on a span inside it (see the menu in Nav.astro).
+ *
  * --ring-duration and --ring-ease are inherited so content can animate in step (see Logo.astro).
  * Elements need padding to sit inside the ring (--spacing-pill).
  */
@@ -35,18 +38,26 @@
 }
 
 @layer components {
-  .press-ring {
+  /* `.press-ring-row` is the link or button and `.press-ring-pill` the span inside it that draws the
+     ring: the whole row is the target (hover, focus, press) but the ring hugs only the label. */
+  .press-ring,
+  .press-ring-pill {
     position: relative;
     isolation: isolate;
     border-radius: 9999px;
-    -webkit-tap-highlight-color: transparent;
     transition: color var(--ring-duration) var(--ring-ease);
 
     --ring-duration: var(--duration-hover);
     --ring-ease: var(--ease-whip);
   }
 
-  .press-ring::before {
+  .press-ring,
+  .press-ring-row {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .press-ring::before,
+  .press-ring-pill::before {
     content: '';
     position: absolute;
     inset: 2px;
@@ -63,40 +74,59 @@
 
   /* Hover only where there is a real hover, so a tap never leaves a sticky hover color. */
   @media (hover: hover) {
-    .press-ring:hover {
+    .press-ring:hover,
+    .press-ring-row:hover .press-ring-pill {
       color: var(--color-ink-hover);
     }
   }
 
-  .press-ring:focus-visible {
+  .press-ring:focus-visible,
+  .press-ring-row:focus-visible .press-ring-pill {
     outline: 2px solid transparent;
+  }
+
+  .press-ring-row:focus-visible {
+    outline: none; /* the pill carries the forced-colors outline, so it hugs the label */
+  }
+
+  .press-ring:focus-visible,
+  .press-ring-row:focus-visible .press-ring-pill {
     color: var(--color-ink-hover);
   }
 
-  .press-ring:focus-visible::before {
+  .press-ring:focus-visible::before,
+  .press-ring-row:focus-visible .press-ring-pill::before {
     opacity: 1;
     scale: 1;
     box-shadow: inset 0 0 0 2px var(--color-ring);
   }
 
-  .press-ring:active {
-    color: var(--color-ink-pressed);
+  .press-ring:active,
+  .press-ring-row:active {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+  }
+
+  .press-ring:active,
+  .press-ring-row:active .press-ring-pill {
+    color: var(--color-ink-pressed);
 
     --ring-duration: var(--duration-press);
     --ring-ease: var(--ease-press);
   }
 
-  .press-ring:focus-visible:active::before {
+  .press-ring:focus-visible:active::before,
+  .press-ring-row:focus-visible:active .press-ring-pill::before {
     inset: 3px;
     box-shadow: inset 0 0 0 2px var(--color-ring-pressed);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .press-ring,
-    .press-ring::before {
+    .press-ring::before,
+    .press-ring-pill,
+    .press-ring-pill::before {
       transition: none;
     }
   }

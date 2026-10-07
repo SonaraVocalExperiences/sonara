@@ -67,32 +67,7 @@ const visualEditingEnabled = isPreview(Astro.cookies);
     <slot />
     <VisualEditing enabled={visualEditingEnabled} />
     <script>
-      // Flags tabbing so focus scrolling stays instant (see global.css). Focus inside the video iframe
-      // is invisible to the page's CSS, so :focus-visible can't tell. The page keeps the flag until a
-      // pointer press or another key.
-      const root = document.documentElement;
-      addEventListener('keydown', (e) => root.toggleAttribute('data-tabbing', e.key === 'Tab'), true);
-      addEventListener('pointerdown', () => root.removeAttribute('data-tabbing'), true);
-
-      // The reader taking over (wheel, touch, scroll keys) ends an anchor's smooth scroll in place.
-      const scrollKeys = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ']);
-      const stopSmoothScroll = () => scrollTo({ left: scrollX, top: scrollY, behavior: 'instant' });
-      addEventListener('wheel', stopSmoothScroll, { passive: true });
-      addEventListener('touchstart', stopSmoothScroll, { passive: true });
-      addEventListener('keydown', (e) => scrollKeys.has(e.key) && stopSmoothScroll(), true);
-
-      // A language switch swaps the page in place; keep the reader where they were. The swap drops
-      // focus, so a switch made from the picker returns it there and Tab reaches the next language.
-      let scrollBeforeSwap = 0;
-      let fromPicker = false;
-      document.addEventListener('astro:before-preparation', (e) => {
-        scrollBeforeSwap = scrollY;
-        fromPicker = !!e.sourceElement?.closest('.locale-switcher');
-      });
-      document.addEventListener('astro:after-swap', () => {
-        scrollTo({ top: scrollBeforeSwap, behavior: 'instant' });
-        if (fromPicker) document.querySelector<HTMLElement>('.locale-switcher')?.focus({ preventScroll: true });
-      });
+      import '../scripts/scroll';
     </script>
   </body>
 </html>

@@ -9,14 +9,44 @@ export const siteName = 'Sonara Vocal Experiences';
  *  Sanity's `language` values; `hreflang` (BCP 47, with region) in `<html lang>`, alternate links,
  *  and the switcher's `lang`/`hreflang`, so a region change never needs a content migration.
  *  `title` is the Studio label. `label` is the switcher's visible abbreviation, and must be the
- *  start of `name` (the language's own name, its accessible name) to satisfy WCAG 2.5.3.
- *  `navLabel` names the switcher's `<nav>` landmark when that locale is the current page. */
+ *  start of `name` (the language's own name, its accessible name) to satisfy WCAG 2.5.3. */
 export const locales = [
-  { id: 'es', hreflang: 'es-ES', title: 'Español', label: 'ES', name: 'Español', navLabel: 'Idioma' },
-  { id: 'ca', hreflang: 'ca-ES', title: 'Català', label: 'CA', name: 'Català', navLabel: 'Idioma' },
-  { id: 'en', hreflang: 'en-US', title: 'English', label: 'EN', name: 'English', navLabel: 'Language' },
+  {
+    id: 'es',
+    hreflang: 'es-ES',
+    title: 'Español',
+    label: 'ES',
+    name: 'Español',
+  },
+  {
+    id: 'ca',
+    hreflang: 'ca-ES',
+    title: 'Català',
+    label: 'CA',
+    name: 'Català',
+  },
+  {
+    id: 'en',
+    hreflang: 'en-US',
+    title: 'English',
+    label: 'EN',
+    name: 'English',
+  },
 ] as const;
 
 export type LocaleId = (typeof locales)[number]['id'];
 
 export const defaultLocale: LocaleId = locales[0].id;
+
+/** UI strings that live in code rather than Sanity (accessible names with no visible text), keyed
+ *  by locale id. `Record<LocaleId, …>` makes a new locale fail to compile until it has every one.
+ *  - `switcherLabel` names the language switcher's `<nav>` landmark.
+ *  - `menuLabel` names the main `<nav>` landmark, the small-screen menu button, and its dialog.
+ *  - `closeLabel` names the menu dialog's close button. */
+export type Messages = { switcherLabel: string; menuLabel: string; closeLabel: string };
+
+export const messages: Record<LocaleId, Messages> = {
+  es: { switcherLabel: 'Idioma', menuLabel: 'Menú', closeLabel: 'Cerrar' },
+  ca: { switcherLabel: 'Idioma', menuLabel: 'Menú', closeLabel: 'Tancar' },
+  en: { switcherLabel: 'Language', menuLabel: 'Menu', closeLabel: 'Close' },
+};

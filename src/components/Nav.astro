@@ -1,14 +1,24 @@
 ---
+/**
+ * Site header: logo, section links, language switcher.
+ *
+ * From md (768px, which is 250% zoom on a 1920px screen) the links sit beside the logo. Below it
+ * they move into MobileMenu, a hamburger at the end of the header, right of the switcher. The logo
+ * and switcher stay put.
+ */
 import type { HomeContent } from '../lib/sanity/getHomeContent';
-import { localePath, siteLocale } from '../lib/sanity/locale';
+import { localePath, messagesOf, siteLocale } from '../lib/sanity/locale';
 import Logo from './Logo.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
+import MobileMenu from './MobileMenu.astro';
 
 interface Props {
   nav: NonNullable<HomeContent['nav']>;
+  cta?: { text?: string; url?: string };
 }
 
 const { approachLabel, contactLabel } = Astro.props.nav;
+const { menuLabel } = messagesOf(Astro.currentLocale);
 const home = localePath(siteLocale(Astro.currentLocale));
 const links = [
   { href: '#enfoque', label: approachLabel },
@@ -16,7 +26,7 @@ const links = [
 ];
 ---
 
-<header class="sticky top-0 z-50 h-(--header-height) px-6 bg-cream">
+<header class="h-(--header-height) px-6 bg-cream">
   <div class="mx-auto flex h-full max-w-6xl items-center gap-4">
     <a
       href={`${home}#top`}
@@ -24,17 +34,22 @@ const links = [
       class="group press-ring -mx-pill flex min-h-12 items-center gap-3 px-pill font-normal tracking-tight"
     >
       <Logo class="size-7" />
-      <span>SONARA</span>
+      <span class="max-[26rem]:sr-only">SONARA</span>
     </a>
-    <nav class="flex items-center -space-x-1 text-sm font-medium">
-      {links.map(({ href, label }) => (
-        <a href={href} class="press-ring flex min-h-11 items-center px-pill">
-          <span class="tracking-wide -me-(--tracking-wide)">{label}</span>
-        </a>
-      ))}
+    <nav aria-label={menuLabel} class="hidden md:block">
+      <ul class="flex items-center -space-x-1 text-sm font-medium">
+        {links.map(({ href, label }) => (
+          <li>
+            <a href={href} class="press-ring flex min-h-11 items-center px-pill">
+              <span class="tracking-wide -me-(--tracking-wide)">{label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </nav>
-    <div class="ml-auto -me-3">
+    <div class="ml-auto -me-3 flex items-center">
       <LocaleSwitcher />
+      <MobileMenu links={links} cta={Astro.props.cta} />
     </div>
   </div>
 </header>

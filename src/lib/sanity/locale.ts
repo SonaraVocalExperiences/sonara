@@ -1,4 +1,4 @@
-import { defaultLocale, locales, type LocaleId } from '../../../sanity.constants';
+import { defaultLocale, locales, messages, type LocaleId } from '../../../sanity.constants';
 
 export { defaultLocale, locales };
 
@@ -7,6 +7,11 @@ export type SiteLocale = LocaleId;
 /** The current request's locale entry (from `Astro.currentLocale`), falling back to the default. */
 export function localeOf(currentLocale: string | undefined): (typeof locales)[number] {
   return locales.find((l) => l.id === currentLocale) ?? locales[0];
+}
+
+/** The current request's UI strings (see `messages` in sanity.constants.ts). */
+export function messagesOf(currentLocale: string | undefined) {
+  return messages[localeOf(currentLocale).id];
 }
 
 /** The current request's locale id (from `Astro.currentLocale`). */

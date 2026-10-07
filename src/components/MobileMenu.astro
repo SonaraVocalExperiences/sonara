@@ -1,0 +1,223 @@
+---
+/**
+ * Small-screen menu: a hamburger button and the modal <dialog> it opens. Render the button where
+ * it should sit in the header; the dialog is in the top layer, so its place in the markup doesn't
+ * matter.
+ *
+ * - A native modal dialog (`showModal`), so the browser makes the rest of the page inert (focus is
+ *   held to the close button, the links, and the CTA), closes on Escape, dims the page with
+ *   ::backdrop, and returns focus to the hamburger on close.
+ * - The sheet covers the header and starts with a row of the same height and gutters, so its close
+ *   button lands exactly where the hamburger was and the control reads as one that morphs. That
+ *   needs the header to fit, so below 416px the wordmark is visually hidden (still the link's
+ *   name); otherwise the header overflows at 320px and the two buttons part ways.
+ * - The sheet is flat (small radius, no shadow or blur) and slides down over the header, opaque, so
+ *   the header's content is simply covered rather than showing through. It animates with
+ *   @starting-style and discrete transitions, so it needs no JS and is instant under reduced motion.
+ * - The CTA reuses the hero's button copy, so there is no extra field to translate.
+ * - The script opens it, and closes it on the close button, a chosen link (anchors don't close a
+ *   dialog), a click on the backdrop (`closedby="any"` would do this natively, but Safari lacks
+ *   it; press and release must both be outside the sheet, and anything else on the cream that isn't
+ *   a button or link is inert, so a near miss never dismisses), and growing past md, where the
+ *   hamburger is gone and the dialog would trap.
+ * - Button and dialog names are localized in `messages` (sanity.constants.ts).
+ */
+import { messagesOf } from '../lib/sanity/locale';
+import Icon from './Icon.astro';
+
+interface Props {
+  links: { href: string; label?: string }[];
+  cta?: { text?: string; url?: string };
+}
+
+const { links, cta = {} } = Astro.props;
+const { menuLabel, closeLabel } = messagesOf(Astro.currentLocale);
+---
+
+<button type="button" class="press-ring flex size-12 items-center justify-center md:hidden" aria-haspopup="dialog">
+  <Icon name="menu" class="size-6" />
+  <span class="sr-only">{menuLabel}</span>
+</button>
+
+<dialog id="site-menu" class="site-menu" aria-label={menuLabel}>
+  <div class="mx-auto max-w-6xl px-6 pb-8">
+    <div class="flex h-(--header-height) items-center justify-end">
+      <button type="button" class="press-ring -me-3 flex size-12 items-center justify-center">
+        <Icon name="close" class="size-6" />
+        <span class="sr-only">{closeLabel}</span>
+      </button>
+    </div>
+    <nav aria-label={menuLabel}>
+      <ul class="menu-list mx-pill text-center text-xl font-medium tracking-tight">
+        {links.map(({ href, label }) => (
+          <li>
+            <a href={href} class="press-ring-row flex min-h-16 items-center justify-center">
+              <span class="press-ring-pill flex min-h-14 items-center px-pill">{label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    {cta.text && (
+      <div class="mt-8 flex justify-center">
+        <a
+          href={cta.url ?? '#contacto'}
+          class="menu-cta inline-block max-w-full rounded-full text-center bg-dark px-10 py-4 text-sm font-semibold tracking-widest text-cream"
+        >
+          {cta.text}
+        </a>
+      </div>
+    )}
+  </div>
+</dialog>
+
+<style>
+  /* A flat, full-width sheet from the top of the viewport; the page behind is dimmed by ::backdrop. */
+  .site-menu {
+    position: fixed;
+    inset: 0 0 auto 0;
+    inline-size: auto;
+    max-inline-size: none;
+    block-size: auto;
+    max-block-size: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0 0 1rem 1rem;
+    overflow-y: auto;
+    background: var(--color-cream);
+    color: inherit;
+  }
+
+  .site-menu::backdrop {
+    background: color-mix(in srgb, var(--color-dark) 70%, transparent);
+  }
+
+  /* The sheet slides down from above the viewport while the backdrop fades. display and overlay
+     are discrete, so they hold until the end of the exit transition. */
+  @media (prefers-reduced-motion: no-preference) {
+    .site-menu,
+    .site-menu::backdrop {
+      transition-duration: var(--duration-menu);
+      transition-timing-function: var(--ease-press);
+      transition-behavior: allow-discrete;
+    }
+
+    .site-menu {
+      translate: 0 -100%;
+      transition-property: translate, overlay, display;
+    }
+
+    .site-menu::backdrop {
+      opacity: 0;
+      transition-property: opacity, overlay, display;
+    }
+
+    .site-menu[open] {
+      translate: 0 0;
+    }
+
+    .site-menu[open]::backdrop {
+      opacity: 1;
+    }
+
+    @starting-style {
+      .site-menu[open] {
+        translate: 0 -100%;
+      }
+
+      .site-menu[open]::backdrop {
+        opacity: 0;
+      }
+    }
+  }
+
+  /* The list is inset by the pill padding, so the dividers and each row's hit area share one width. */
+  .menu-list,
+  .menu-list li {
+    position: relative;
+  }
+
+  .menu-list::before,
+  .menu-list li::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    block-size: 1px;
+    background: color-mix(in srgb, var(--color-dark) 15%, transparent);
+  }
+
+  .menu-list::before {
+    inset-block-start: 0;
+  }
+
+  .menu-list li::after {
+    inset-block-end: 0;
+  }
+
+  /* Filled pill: it lightens to sage on hover and press, and rings on keyboard focus. */
+  .menu-cta {
+    transition: background-color var(--duration-hover) var(--ease-press);
+  }
+
+  .menu-cta:focus-visible {
+    outline: 3px solid var(--color-ring);
+    outline-offset: 4px;
+  }
+
+  @media (hover: hover) {
+    .menu-cta:hover {
+      background: var(--color-ink-hover);
+    }
+  }
+
+  .menu-cta:active {
+    background: var(--color-ink-pressed);
+  }
+
+  /* Forced colors drop backgrounds, so give the CTA a border and the dividers a system color. */
+  @media (forced-colors: active) {
+    .menu-cta {
+      border: 2px solid ButtonText;
+    }
+
+    .menu-list::before,
+    .menu-list li::after {
+      background: CanvasText;
+    }
+  }
+
+  /* Keep the page from scrolling behind the open menu. */
+  :global(html:has(.site-menu[open])) {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  const breakpoint = matchMedia('(width >= 48rem)');
+  const menu = () => document.querySelector<HTMLDialogElement>('#site-menu');
+
+  // Only a press that starts and ends on the backdrop dismisses. A click whose target is the dialog
+  // can also come from its edges or a drag that began inside, so check where it landed.
+  const onBackdrop = ({ clientX: x, clientY: y }: MouseEvent, dialog: HTMLElement) => {
+    const r = dialog.getBoundingClientRect();
+    return x < r.left || x > r.right || y < r.top || y > r.bottom;
+  };
+  let pressedOnBackdrop = false;
+
+  document.addEventListener('pointerdown', (e) => {
+    const dialog = menu();
+    pressedOnBackdrop = !!dialog?.open && e.target === dialog && onBackdrop(e, dialog);
+  });
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element;
+    const dialog = menu();
+    if (!dialog) return;
+    if (target.closest('[aria-haspopup="dialog"]')) dialog.showModal();
+    else if (target.closest('#site-menu a, #site-menu button')) dialog.close();
+    else if (target === dialog && pressedOnBackdrop && onBackdrop(e, dialog)) dialog.close();
+  });
+
+  breakpoint.addEventListener('change', (e) => e.matches && menu()?.close());
+</script>

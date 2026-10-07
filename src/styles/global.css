@@ -8,19 +8,15 @@
 
   --duration-hover: 175ms; /* default for Tailwind's transition-* utilities and the ring */
   --duration-page: 250ms; /* language switch crossfade */
+  --duration-menu: 400ms; /* narrow viewport menu slide */
   --default-transition-duration: var(--duration-hover);
 
-  --header-height: 4.5rem; /* Nav height, also the anchor scroll offset */
+  --header-height: 4.5rem; /* Nav height, also the menu sheet's header row */
 
   --font-sans: 'Inter Variable', system-ui, sans-serif;
 }
 
-/* Anchor links scroll natively. The offset keeps targets clear of the fixed header. */
-html {
-  scroll-padding-top: var(--header-height);
-}
-
-/* Smooth for anchor links, but not while tabbing (see Layout.astro). */
+/* Anchor links scroll natively, smoothly except while tabbing (see scripts/scroll.ts). */
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-tabbing]) {
     scroll-behavior: smooth;
