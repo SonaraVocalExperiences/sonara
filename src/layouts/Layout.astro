@@ -63,5 +63,20 @@ const visualEditingEnabled = isPreview(Astro.cookies);
   <body class="bg-cream text-dark font-sans antialiased">
     <slot />
     <VisualEditing enabled={visualEditingEnabled} />
+    <script>
+      // Flags tabbing so focus scrolling stays instant (see global.css). Focus inside the video iframe
+      // is invisible to the page's CSS, so :focus-visible can't tell. The page keeps the flag until a
+      // pointer press or another key.
+      const root = document.documentElement;
+      addEventListener('keydown', (e) => root.toggleAttribute('data-tabbing', e.key === 'Tab'), true);
+      addEventListener('pointerdown', () => root.removeAttribute('data-tabbing'), true);
+
+      // The reader taking over (wheel, touch, scroll keys) ends an anchor's smooth scroll in place.
+      const scrollKeys = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ']);
+      const stopSmoothScroll = () => scrollTo({ left: scrollX, top: scrollY, behavior: 'instant' });
+      addEventListener('wheel', stopSmoothScroll, { passive: true });
+      addEventListener('touchstart', stopSmoothScroll, { passive: true });
+      addEventListener('keydown', (e) => scrollKeys.has(e.key) && stopSmoothScroll(), true);
+    </script>
   </body>
 </html>

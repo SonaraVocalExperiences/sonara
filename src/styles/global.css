@@ -9,5 +9,19 @@
   --duration-hover: 175ms; /* default for Tailwind's transition-* utilities and the ring */
   --default-transition-duration: var(--duration-hover);
 
+  --header-height: 4.5rem; /* Nav height, also the anchor scroll offset */
+
   --font-sans: 'Inter Variable', system-ui, sans-serif;
+}
+
+/* Anchor links scroll natively. The offset keeps targets clear of the fixed header. */
+html {
+  scroll-padding-top: var(--header-height);
+}
+
+/* Smooth for anchor links, but not while tabbing (see Layout.astro). */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-tabbing]) {
+    scroll-behavior: smooth;
+  }
 }

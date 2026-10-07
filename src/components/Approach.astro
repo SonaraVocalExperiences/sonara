@@ -10,10 +10,16 @@ const { heading, intro, pillars, image, imageAlt } = Astro.props.approach;
 const imageUrl = image?.asset && imageUrlBuilder.image(image).width(1200).auto('format').url();
 ---
 
-<section id="enfoque" class="bg-cream py-24 px-6">
+<section class="bg-cream py-24 px-6">
   <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
     <div>
-      <h2 class="text-5xl md:text-6xl font-black text-dark mb-8 leading-tight">{heading}</h2>
+      <h2
+        id="enfoque"
+        tabindex="-1"
+        class="text-5xl md:text-6xl font-black text-dark mb-8 leading-tight scroll-mt-6 focus:outline-none"
+      >
+        {heading}
+      </h2>
       <p class="text-xl font-semibold text-dark leading-snug mb-12">{intro}</p>
       <div class="space-y-8">
         {(pillars ?? []).map((pillar) => (
