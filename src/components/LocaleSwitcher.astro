@@ -17,7 +17,7 @@ import { localeOf, localePath, locales } from '../lib/sanity/locale';
 const current = localeOf(Astro.currentLocale);
 ---
 
-<nav class="locale-switcher" aria-label={current.navLabel} translate="no">
+<nav class="locale-switcher" aria-label={current.navLabel} translate="no" tabindex="-1">
   <ul class="locale-switcher__list">
     {locales.map((l) => (
       <li>
@@ -46,6 +46,10 @@ const current = localeOf(Astro.currentLocale);
     --locale-current: var(--color-dark); /* 14.91:1 on cream */
     --locale-muted: color-mix(in srgb, var(--color-dark) 75%, var(--color-cream)); /* 7.01:1 on cream */
     --locale-spacing: 0.04em;
+  }
+
+  .locale-switcher:focus {
+    outline: none; /* focused by script after a switch, to anchor the next Tab; not interactive */
   }
 
   .locale-switcher__list {

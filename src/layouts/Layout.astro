@@ -1,6 +1,7 @@
 ---
 import '@fontsource-variable/inter';
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import { stegaClean } from '@sanity/client/stega';
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import { siteName } from '../../sanity.constants';
@@ -58,6 +59,8 @@ const visualEditingEnabled = isPreview(Astro.cookies);
     {image && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
     <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
 
+    {!visualEditingEnabled && <ClientRouter />}
+
     <slot name="head" />
   </head>
   <body class="bg-cream text-dark font-sans antialiased">
@@ -77,6 +80,19 @@ const visualEditingEnabled = isPreview(Astro.cookies);
       addEventListener('wheel', stopSmoothScroll, { passive: true });
       addEventListener('touchstart', stopSmoothScroll, { passive: true });
       addEventListener('keydown', (e) => scrollKeys.has(e.key) && stopSmoothScroll(), true);
+
+      // A language switch swaps the page in place; keep the reader where they were. The swap drops
+      // focus, so a switch made from the picker returns it there and Tab reaches the next language.
+      let scrollBeforeSwap = 0;
+      let fromPicker = false;
+      document.addEventListener('astro:before-preparation', (e) => {
+        scrollBeforeSwap = scrollY;
+        fromPicker = !!e.sourceElement?.closest('.locale-switcher');
+      });
+      document.addEventListener('astro:after-swap', () => {
+        scrollTo({ top: scrollBeforeSwap, behavior: 'instant' });
+        if (fromPicker) document.querySelector<HTMLElement>('.locale-switcher')?.focus({ preventScroll: true });
+      });
     </script>
   </body>
 </html>

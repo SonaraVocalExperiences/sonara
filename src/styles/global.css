@@ -7,6 +7,7 @@
   --color-dark: #1a1a18;
 
   --duration-hover: 175ms; /* default for Tailwind's transition-* utilities and the ring */
+  --duration-page: 250ms; /* language switch crossfade */
   --default-transition-duration: var(--duration-hover);
 
   --header-height: 4.5rem; /* Nav height, also the anchor scroll offset */
@@ -23,5 +24,21 @@ html {
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-tabbing]) {
     scroll-behavior: smooth;
+  }
+}
+
+/* Language switch crossfade (ClientRouter). Reduced motion gets an instant swap. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--duration-page);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
   }
 }
