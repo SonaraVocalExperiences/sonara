@@ -13,17 +13,17 @@
 
   --header-height: 4.5rem; /* Nav height, also the menu sheet's header row */
 
-  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  /* Set by <Font> in Layout.astro. Scripts first: its faces only cover non-latin characters, and the
+     latin family ends in the metric-matched fallback, which would otherwise match them all. */
+  --font-sans: var(--font-inter-scripts), var(--font-inter);
 }
 
-/* Anchor links scroll natively, smoothly except while tabbing (see scripts/scroll.ts). */
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-tabbing]) {
-    scroll-behavior: smooth;
-  }
+/* Language switch crossfade, native to the browser (where unsupported, a plain page load). Reduced
+   motion gets an instant swap. */
+@view-transition {
+  navigation: auto;
 }
 
-/* Language switch crossfade (ClientRouter). Reduced motion gets an instant swap. */
 @media (prefers-reduced-motion: no-preference) {
   ::view-transition-old(root),
   ::view-transition-new(root) {

@@ -17,13 +17,7 @@ import { localeOf, localePath, locales, messagesOf } from '../lib/sanity/locale'
 const current = localeOf(Astro.currentLocale);
 ---
 
-<nav
-  class="locale-switcher"
-  data-locale-switcher
-  aria-label={messagesOf(Astro.currentLocale).switcherLabel}
-  translate="no"
-  tabindex="-1"
->
+<nav class="locale-switcher" aria-label={messagesOf(Astro.currentLocale).switcherLabel} translate="no">
   <ul class="locale-switcher__list">
     {locales.map((l) => (
       <li>
@@ -47,27 +41,11 @@ const current = localeOf(Astro.currentLocale);
   </ul>
 </nav>
 
-<script>
-  // A switch swaps the page in place and drops focus, so one made from the switcher returns focus
-  // to it and Tab reaches the next language.
-  let fromSwitcher = false;
-  document.addEventListener('astro:before-preparation', (e) => {
-    fromSwitcher = !!e.sourceElement?.closest('[data-locale-switcher]');
-  });
-  document.addEventListener('astro:after-swap', () => {
-    if (fromSwitcher) document.querySelector<HTMLElement>('[data-locale-switcher]')?.focus({ preventScroll: true });
-  });
-</script>
-
 <style>
   .locale-switcher {
     --locale-current: var(--color-dark); /* 14.91:1 on cream */
     --locale-muted: color-mix(in srgb, var(--color-dark) 75%, var(--color-cream)); /* 7.01:1 on cream */
     --locale-spacing: 0.04em;
-  }
-
-  .locale-switcher:focus {
-    outline: none; /* focused by script after a switch, to anchor the next Tab; not interactive */
   }
 
   .locale-switcher__list {

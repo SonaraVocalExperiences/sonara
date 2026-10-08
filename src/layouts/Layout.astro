@@ -1,7 +1,6 @@
 ---
-import '@fontsource-variable/inter';
 import '../styles/global.css';
-import { ClientRouter } from 'astro:transitions';
+import { Font } from 'astro:assets';
 import { stegaClean } from '@sanity/client/stega';
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import { siteName } from '../../sanity.constants';
@@ -30,6 +29,8 @@ const visualEditingEnabled = isPreview(Astro.cookies);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-inter-scripts" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -59,15 +60,10 @@ const visualEditingEnabled = isPreview(Astro.cookies);
     {image && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
     <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
 
-    {!visualEditingEnabled && <ClientRouter />}
-
     <slot name="head" />
   </head>
   <body class="bg-cream text-dark font-sans antialiased">
     <slot />
     <VisualEditing enabled={visualEditingEnabled} />
-    <script>
-      import '../scripts/scroll';
-    </script>
   </body>
 </html>

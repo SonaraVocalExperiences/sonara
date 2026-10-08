@@ -85,8 +85,14 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
 - Required fields are typed optional on purpose (`enforceRequiredFields` off): validation only blocks
   publishing, and preview renders drafts, so components must tolerate missing values.
 - The three locale pages only render `HomePageView.astro`, which fetches through `getHomeContent()`.
-- Inter is self-hosted via `@fontsource-variable/inter` (imported in `Layout.astro`), not Google
-  Fonts, so no visitor data goes to Google.
+- Inter is self-hosted, not Google Fonts, so no visitor data goes to Google. Astro's Fonts API
+  (`fonts` in `astro.config.mjs`, `<Font>` in `Layout.astro`) serves `@fontsource-variable/inter`'s
+  subset files by unicode range as two families: `--font-inter` (latin, preloaded, with a
+  metric-matched fallback so text doesn't resize when the font swaps in) and `--font-inter-scripts`
+  (every other subset, so a browser-translated page still gets Inter; each file only downloads when
+  a page uses its characters). Two families because `<Font preload>` can't single out one subset;
+  `--font-sans` lists scripts first. The `local` provider is used rather than `npm`, which measures
+  the fallback from the package's first (Cyrillic) file and over-sizes it.
 - Published reads go through the Sanity CDN. Preview (Presentation tool → `/api/draft-mode/enable`)
   sets a cookie; requests with it read drafts with the read token and enable stega for Visual Editing.
 - `src/shims/react-compiler-runtime.mjs` works around rolldown-vite (Vite 8) dropping that package's
@@ -104,6 +110,10 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   here needs v8; move both up together once `@sanity/astro` adopts visual-editing v6. The embedded
   Studio brings its own client v8 as a dependency, which is expected.
 - Section anchors are Spanish and hardcoded, not CMS-editable: `#enfoque`, `#contacto`.
+- Scrolling is the browser default: no `scroll-behavior: smooth` and no scroll scripts. Smooth
+  scrolling behaves differently across browsers (Chrome animates scroll restoration on refresh,
+  Safari doesn't), and `<ClientRouter />` replaced the browser's scroll restoration with its own,
+  which broke refresh. The language-switch crossfade is the CSS-only `@view-transition` instead.
 
 ## Status
 
