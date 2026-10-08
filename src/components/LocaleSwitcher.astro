@@ -6,9 +6,9 @@
  * - The current locale is plain text with aria-current, so it is announced but adds no tab stop.
  * - Visible text is the abbreviation (aria-hidden, with an <abbr title> for WCAG 3.1.4); the
  *   accessible name is the language's own name in a visually hidden span, read in that language.
- * - State is shown by underline (links) vs semibold on a tinted pill (current), never by color alone.
- * - Keyboard focus shows the shared press-ring (a 4.6:1 border, which stands in for the browser
- *   outline); hover keeps the underline only.
+ * - State is shown by weight and a tinted pill (current is semibold on it), never by color alone.
+ * - Links use the shared press-ring, like the nav links, so hover, press, and keyboard focus (a
+ *   4.6:1 ring in place of the browser outline) look and time the same across the header.
  * - Targets are at least 44×44px (2.5.5); every state keeps text contrast ≥ 7:1 (1.4.6).
  * - translate="no" keeps page translation from rewriting language names.
  */
@@ -43,8 +43,6 @@ const current = localeOf(Astro.currentLocale);
 
 <style>
   .locale-switcher {
-    --locale-current: var(--color-dark); /* 14.91:1 on cream */
-    --locale-muted: color-mix(in srgb, var(--color-dark) 75%, var(--color-cream)); /* 7.01:1 on cream */
     --locale-spacing: 0.04em;
     --locale-pill: color-mix(in srgb, var(--color-dark) 6%, var(--color-cream)); /* text on it: 13.2:1 */
   }
@@ -52,7 +50,6 @@ const current = localeOf(Astro.currentLocale);
   .locale-switcher__list {
     display: flex;
     align-items: center;
-    gap: 0;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -70,18 +67,14 @@ const current = localeOf(Astro.currentLocale);
     min-inline-size: 2.75rem;
     min-block-size: 2.75rem;
     padding-inline: 0.375rem;
-    border-radius: 6px;
     font-size: 0.8125rem;
     font-weight: 650;
     line-height: 1;
     letter-spacing: var(--locale-spacing);
     text-transform: uppercase;
     text-decoration: none;
-    color: var(--locale-current);
   }
 
-  /* The current locale sits on a filled neutral pill: a selected segment, not a control, so it has no
-     hover or press and can't be mistaken for the focus ring, which is an outline. */
   span.locale-switcher__item {
     position: relative;
     isolation: isolate;
@@ -99,32 +92,11 @@ const current = localeOf(Astro.currentLocale);
 
   .locale-switcher__abbr {
     margin-inline-end: calc(var(--locale-spacing) * -1);
-    text-decoration: none; /* reset the UA dotted underline on abbr[title] */
+    text-decoration: none;
     cursor: inherit;
   }
 
   a.locale-switcher__item {
-    border-radius: 9999px; /* keeps the ring and the focus outline round */
     font-weight: 450;
-    color: var(--locale-muted);
-  }
-
-  a.locale-switcher__item .locale-switcher__abbr {
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.15em;
-  }
-
-  a.locale-switcher__item:is(:hover, :focus-visible) {
-    color: var(--locale-current);
-  }
-
-  a.locale-switcher__item:is(:hover, :focus-visible) .locale-switcher__abbr {
-    text-decoration-line: underline;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .locale-switcher__abbr {
-      transition: color var(--ring-duration) var(--ring-ease);
-    }
   }
 </style>
