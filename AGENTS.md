@@ -90,7 +90,9 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   subset files by unicode range as two families: `--font-inter` (latin, preloaded, with a
   metric-matched fallback so text doesn't resize when the font swaps in) and `--font-inter-scripts`
   (every other subset, so a browser-translated page still gets Inter; each file only downloads when
-  a page uses its characters). Two families because `<Font preload>` can't single out one subset;
+  a page uses its characters). The latin family uses `font-display: optional`: it is preloaded and
+  cached, so Inter is ready at first paint, and when it isn't the page keeps the fallback instead of
+  swapping mid-crossfade. Two families because `<Font preload>` can't single out one subset;
   `--font-sans` lists scripts first. The `local` provider is used rather than `npm`, which measures
   the fallback from the package's first (Cyrillic) file and over-sizes it.
 - Published reads go through the Sanity CDN. Preview (Presentation tool → `/api/draft-mode/enable`)

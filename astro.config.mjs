@@ -57,6 +57,8 @@ export default defineConfig({
       name: 'Inter',
       cssVariable: '--font-inter',
       fallbacks: ['sans-serif'],
+      // Preloaded and cached, so Inter is ready at first paint; if not, keep the fallback, never swap.
+      display: 'optional',
       options: {
         variants: [
           interSubset(
