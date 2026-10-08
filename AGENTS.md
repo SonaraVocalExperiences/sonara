@@ -92,7 +92,7 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   (every other subset, so a browser-translated page still gets Inter; each file only downloads when
   a page uses its characters). The latin family uses `font-display: optional`: it is preloaded and
   cached, so Inter is ready at first paint, and when it isn't the page keeps the fallback instead of
-  swapping mid-crossfade. Two families because `<Font preload>` can't single out one subset;
+  swapping in visibly. Two families because `<Font preload>` can't single out one subset;
   `--font-sans` lists scripts first. The `local` provider is used rather than `npm`, which measures
   the fallback from the package's first (Cyrillic) file and over-sizes it.
 - Published reads go through the Sanity CDN. Preview (Presentation tool → `/api/draft-mode/enable`)
@@ -115,7 +115,9 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
 - Scrolling is the browser default: no `scroll-behavior: smooth` and no scroll scripts. Smooth
   scrolling behaves differently across browsers (Chrome animates scroll restoration on refresh,
   Safari doesn't), and `<ClientRouter />` replaced the browser's scroll restoration with its own,
-  which broke refresh. The language-switch crossfade is the CSS-only `@view-transition` instead.
+  which broke refresh. Switching language is a plain page load: no `@view-transition` crossfade,
+  which looked janky in Chrome on iPhone (it applies its toolbar inset late) and confirmed nothing
+  a page load doesn't.
 
 ## Status
 

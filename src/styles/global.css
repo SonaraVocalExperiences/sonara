@@ -7,7 +7,6 @@
   --color-dark: #1a1a18;
 
   --duration-hover: 175ms; /* default for Tailwind's transition-* utilities and the ring */
-  --duration-page: 250ms; /* language switch crossfade */
   --duration-menu: 400ms; /* narrow viewport menu slide */
   --default-transition-duration: var(--duration-hover);
 
@@ -16,25 +15,4 @@
   /* Set by <Font> in Layout.astro. Scripts first: its faces only cover non-latin characters, and the
      latin family ends in the metric-matched fallback, which would otherwise match them all. */
   --font-sans: var(--font-inter-scripts), var(--font-inter);
-}
-
-/* Language switch crossfade, native to the browser (where unsupported, a plain page load). Reduced
-   motion gets an instant swap. */
-@view-transition {
-  navigation: auto;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: var(--duration-page);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(root),
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
 }
