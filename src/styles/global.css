@@ -3,6 +3,7 @@
 
 @theme static {
   --color-sage: #8fa88a;
+  --color-moss: #5d6a54; /* the shell, as in public/favicon.svg */
   --color-cream: #f0ede6;
   --color-dark: #1a1a18;
 
