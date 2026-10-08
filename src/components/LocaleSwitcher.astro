@@ -6,7 +6,7 @@
  * - The current locale is plain text with aria-current, so it is announced but adds no tab stop.
  * - Visible text is the abbreviation (aria-hidden, with an <abbr title> for WCAG 3.1.4); the
  *   accessible name is the language's own name in a visually hidden span, read in that language.
- * - State is shown by underline (links) vs semibold (current), never by color alone.
+ * - State is shown by underline (links) vs semibold on a tinted pill (current), never by color alone.
  * - Keyboard focus shows the shared press-ring (a 4.6:1 border, which stands in for the browser
  *   outline); hover keeps the underline only.
  * - Targets are at least 44×44px (2.5.5); every state keeps text contrast ≥ 7:1 (1.4.6).
@@ -46,6 +46,7 @@ const current = localeOf(Astro.currentLocale);
     --locale-current: var(--color-dark); /* 14.91:1 on cream */
     --locale-muted: color-mix(in srgb, var(--color-dark) 75%, var(--color-cream)); /* 7.01:1 on cream */
     --locale-spacing: 0.04em;
+    --locale-pill: color-mix(in srgb, var(--color-dark) 6%, var(--color-cream)); /* text on it: 13.2:1 */
   }
 
   .locale-switcher__list {
@@ -60,14 +61,6 @@ const current = localeOf(Astro.currentLocale);
   .locale-switcher__list li {
     display: flex;
     align-items: center;
-  }
-
-  .locale-switcher__list li + li::before {
-    content: '';
-    inline-size: 1px;
-    block-size: 1rem;
-    border-radius: 1px;
-    background: color-mix(in srgb, var(--color-dark) 45%, var(--color-cream));
   }
 
   .locale-switcher__item {
@@ -85,6 +78,23 @@ const current = localeOf(Astro.currentLocale);
     text-transform: uppercase;
     text-decoration: none;
     color: var(--locale-current);
+  }
+
+  /* The current locale sits on a filled neutral pill: a selected segment, not a control, so it has no
+     hover or press and can't be mistaken for the focus ring, which is an outline. */
+  span.locale-switcher__item {
+    position: relative;
+    isolation: isolate;
+  }
+
+  span.locale-switcher__item::before {
+    content: '';
+    position: absolute;
+    inset: 0.5rem 0.125rem;
+    z-index: -1;
+    border: 1px solid transparent; /* the pill's edge in forced colors, which drop backgrounds */
+    border-radius: 9999px;
+    background: var(--locale-pill);
   }
 
   .locale-switcher__abbr {
