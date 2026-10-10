@@ -118,7 +118,7 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
 - `@sanity/client` stays on v7 because visual-editing v5 declares `^7.24.0` as its peer. Nothing
   here needs v8; move both up together once `@sanity/astro` adopts visual-editing v6. The embedded
   Studio brings its own client v8 as a dependency, which is expected.
-- The contact form's field names are Spanish (`nombre`, `organizacion`, `mensaje`, `trampa` for the
+- The contact form's field names are Spanish (`nombre`, `organización`, `mensaje`, `trampa` for the
   honeypot) except `email`, which Netlify uses as the Reply-To of notification emails. The form in
   `Contact.astro` and the one in `public/__forms.html` must keep identical names. The success and
   error messages are `contact.successMessage` / `errorMessage` in Sanity, read by the inline script
