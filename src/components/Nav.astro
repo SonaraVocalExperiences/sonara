@@ -8,6 +8,7 @@
  */
 import type { HomeContent } from '../lib/sanity/getHomeContent';
 import { localePath, messagesOf, siteLocale } from '../lib/sanity/locale';
+import { withVariants } from '../lib/variants';
 import Logo from './Logo.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 import MobileMenu from './MobileMenu.astro';
@@ -19,7 +20,7 @@ interface Props {
 
 const { approachLabel, contactLabel } = Astro.props.nav;
 const { menuLabel } = messagesOf(Astro.currentLocale);
-const home = localePath(siteLocale(Astro.currentLocale));
+const home = withVariants(localePath(siteLocale(Astro.currentLocale)), Astro.url);
 const links = [
   { href: '#enfoque', label: approachLabel },
   { href: '#contacto', label: contactLabel },

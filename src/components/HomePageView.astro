@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
+import HeroShell from '../components/HeroShell.astro';
 import VideoSection from '../components/VideoSection.astro';
 import Approach from '../components/Approach.astro';
 import Testimonials from '../components/Testimonials.astro';
@@ -14,9 +15,11 @@ import { getHomeContent } from '../lib/sanity/getHomeContent';
 import { imageUrlBuilder } from '../lib/sanity/image';
 import { siteLocale } from '../lib/sanity/locale';
 import { isPreview } from '../lib/sanity/preview';
+import { variantOf } from '../lib/variants';
 
 const content = await getHomeContent(siteLocale(Astro.currentLocale), isPreview(Astro.cookies));
 const { seo, contact } = content;
+const HeroVariant = { plain: Hero, shell: HeroShell }[variantOf(Astro.url, 'hero')];
 
 const shareImage = seo?.image?.asset
   ? imageUrlBuilder.image(seo.image).width(1200).height(630).fit('crop').auto('format').url()
@@ -39,7 +42,7 @@ const organizationJson = JSON.stringify(organization).replace(/</g, '\\u003c');
 <Layout title={seo?.title} description={seo?.description} image={shareImage} imageAlt={content.approach?.imageAlt}>
   <script slot="head" type="application/ld+json" set:html={organizationJson} />
   <Nav nav={content.nav ?? {}} cta={{ text: content.hero?.ctaText, url: content.hero?.ctaUrl }} />
-  <Hero hero={content.hero ?? {}} />
+  <HeroVariant hero={content.hero ?? {}} />
   <VideoSection video={content.video ?? {}} />
   <Approach approach={content.approach ?? {}} />
   <Testimonials items={content.testimonials ?? []} />

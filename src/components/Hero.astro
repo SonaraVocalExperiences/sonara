@@ -1,19 +1,5 @@
 ---
-/**
- * Opening section: the name, subtitle, intro, and booking link over the shell, in the same
- * max-w-6xl column as the sections below. Sizes use container units (cqi) of that column, so the
- * name always spans it and the shell keeps its place against the name.
- *
- * The text erases the shell where they cross: the name (and the subtitle from md) is stroked in
- * the section's own color, painted under the fill (paint-order), so a band clears around every
- * glyph. The paragraph (and the subtitle below md) clears a band per line and the button a ring.
- * Over plain sage they are invisible.
- *
- * Tailwind sets plain type, spacing, and color, as in the other sections; everything for the shell
- * and the erase effect lives in the style block below.
- */
 import type { HomeContent } from '../lib/sanity/getHomeContent';
-import Shell from './Shell.astro';
 
 interface Props {
   hero: NonNullable<HomeContent['hero']>;
@@ -22,132 +8,14 @@ interface Props {
 const { headline, subtitle, body, ctaText, ctaUrl } = Astro.props.hero;
 ---
 
-<section class="hero flex min-h-[calc(100svh-var(--header-height))] items-center overflow-hidden bg-sage px-6 py-24">
-  <div class="hero__column @container mx-auto w-full max-w-6xl">
-    <div class="hero__heading">
-      <Shell class="hero__shell text-moss" />
-      <h1 class="hero__name mb-[0.25em] leading-none font-black tracking-widest text-cream">{headline}</h1>
-      <h2 class="hero__subtitle mb-8 max-w-3xl text-[clamp(1.5rem,4.5cqi,3rem)] leading-tight font-bold text-dark">
-        <span>
-          <span>{subtitle}</span>
-        </span>
-      </h2>
-    </div>
-    <p class="hero__lines mb-12 max-w-xl text-base leading-relaxed text-cream md:text-lg">
-      <span>
-        <span>{body}</span>
-      </span>
-    </p>
-    <a
-      href={ctaUrl ?? '#contacto'}
-      class="hero__cta inline-block rounded-full bg-cream px-10 py-4 text-sm font-semibold tracking-widest text-dark transition-colors hover:bg-white"
-    >
-      {ctaText}
-    </a>
-  </div>
+<section class="min-h-[calc(100vh-var(--header-height))] bg-sage flex flex-col items-center justify-center text-center px-6 py-32">
+  <h1 class="text-[clamp(3rem,18vw,14rem)] font-black leading-none tracking-widest text-cream mb-4">{headline}</h1>
+  <h2 class="text-[clamp(1.5rem,4vw,3rem)] font-bold text-dark mb-8 max-w-3xl leading-tight">{subtitle}</h2>
+  <p class="text-base md:text-lg text-cream max-w-xl leading-relaxed mb-12">{body}</p>
+  <a
+    href={ctaUrl ?? '#contacto'}
+    class="inline-block bg-cream text-dark font-semibold tracking-widest text-sm px-10 py-4 rounded-full hover:bg-white transition-colors"
+  >
+    {ctaText}
+  </a>
 </section>
-
-<style>
-  .hero {
-    --name-size: 18cqi; /* of the column, so the name always spans it */
-    --erase-small: 2px;
-    --erase-large: 8px;
-  }
-
-  /* The shell sits behind the text: z-index -1 inside the column's own stacking context. */
-  .hero__column {
-    position: relative;
-    isolation: isolate;
-  }
-
-  /* Breakpoints follow the viewport, so they track browser zoom: md (48rem) is 250% on a 1920px
-     screen. Below md the shell is centered on the name, toward its end. Its containing block is
-     then the name and subtitle (100%), and half its height must fit on each side of the center:
-     down to the subtitle's bottom, and up into the section's 6rem top padding, never under the
-     header. From md it sits beside the text, against the whole column. */
-  .hero__heading {
-    position: relative;
-  }
-
-  .hero__shell {
-    --center: calc(0.45 * var(--name-size));
-    position: absolute;
-    z-index: -1;
-    inset-block-start: var(--center);
-    inset-inline-start: calc(3.47 * var(--name-size));
-    inline-size: 60cqi;
-    max-block-size: min(2 * (100% - var(--center)), 2 * (var(--center) + 6rem));
-    translate: -50% -50%;
-    opacity: 0.2;
-  }
-
-  @media (width >= 48rem) {
-    .hero__heading {
-      position: static;
-    }
-
-    .hero__shell {
-      inset-block-start: 60%;
-      inset-inline: auto 0;
-      inline-size: 50cqi;
-      max-block-size: none;
-      translate: 0 -50%;
-    }
-  }
-
-  .hero__name {
-    font-size: var(--name-size);
-    -webkit-text-stroke: calc(2 * var(--erase-small)) var(--color-sage);
-    paint-order: stroke fill;
-    stroke-linejoin: round;
-  }
-
-  /* Body text, and the subtitle below md where it wraps onto short lines, erases with a rounded
-     band per line instead: an outline on small text goes blobby between lines. The bands overlap
-     so no seam shows; the text is in a positioned span, which paints after every band, so a band
-     never covers the descenders above it. The negative margin keeps the text itself aligned with
-     the name. */
-  .hero__lines,
-  .hero__subtitle {
-    margin-inline: calc(-1 * var(--erase-large));
-  }
-
-  .hero__lines > span,
-  .hero__subtitle > span {
-    padding: calc((1lh - 1em) / 2) var(--erase-large);
-    border-radius: var(--erase-large);
-    background: var(--color-sage);
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-  }
-
-  .hero__lines > span > span,
-  .hero__subtitle > span > span {
-    position: relative;
-  }
-
-  /* From md the subtitle sits on long lines, so it takes an outline like the name. */
-  @media (width >= 48rem) {
-    .hero__subtitle {
-      margin-inline: 0;
-      -webkit-text-stroke: calc(2 * var(--erase-large)) var(--color-sage);
-      paint-order: stroke fill;
-      stroke-linejoin: round;
-    }
-
-    .hero__subtitle > span {
-      padding: 0;
-      background: none;
-    }
-  }
-
-  /* The outline is part of the text, so it would paint over the selection highlight. */
-  .hero__name::selection,
-  .hero__subtitle ::selection {
-    -webkit-text-stroke-color: transparent;
-  }
-
-  .hero__cta {
-    box-shadow: 0 0 0 var(--erase-small) var(--color-sage);
-  }
-</style>

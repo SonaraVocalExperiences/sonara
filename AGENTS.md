@@ -85,6 +85,13 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
 - Required fields are typed optional on purpose (`enforceRequiredFields` off): validation only blocks
   publishing, and preview renders drafts, so components must tolerate missing values.
 - The three locale pages only render `HomePageView.astro`, which fetches through `getHomeContent()`.
+- Design variants on trial are listed in `src/lib/variants.ts`. Each is picked per request by a
+  query parameter whose first option is the default (`/?hero=shell`, `/ca?hero=shell`), so a variant
+  can be built on `main` and tested or shown to the owner by link, with no branch or deploy. Each is
+  its own component (`HeroShell.astro` beside `Hero.astro`), picked in `HomePageView.astro`. The
+  logo and language links keep the parameter (`withVariants`); the canonical URL drops it. Every
+  variant's scoped CSS ships on every page. To settle one, delete the losing component and the
+  entry, and give the winner the original name.
 - Inter is self-hosted, not Google Fonts, so no visitor data goes to Google. Astro's Fonts API
   (`fonts` in `astro.config.mjs`, `<Font>` in `Layout.astro`) serves `@fontsource-variable/inter`'s
   subset files by unicode range as two families: `--font-inter` (latin, preloaded, with a
@@ -130,8 +137,27 @@ as full-width heavy quotes, a seamless marquee, and mobile responsiveness.
 - **Contact form will not receive submissions as built.** Netlify Forms only detects forms in static
   HTML at deploy time, and every page here is server-rendered. Add a static form definition (e.g.
   `public/__forms.html` with matching fields) and submit to it with `fetch`.
+- Finalize colors for WCAG contrast: cream text on sage is 2.2:1 (hero, marquee). Tried a darker
+  sage behind cream text only (`#5b7256`, moss `#2d3925`); contact `text-dark/70` and `/40`
+  placeholders also fail.
 - Video URL in Sanity is a placeholder (`REPLACE_WITH_VIDEO_ID`).
 - Netlify: connect the repo, set `SANITY_API_READ_TOKEN`, add the production origin to Sanity CORS
   (with credentials, or the embedded Studio cannot log in), register `<domain>/admin` under the
   Sanity project's Studios so it is listed in the dashboard, and point DNS.
 - Client handoff: walk them through the Studio and write a short plain-English guide.
+- Decide the hero with the owner: plain (`/`) or shell (`/?hero=shell`).
+- **Design pass** (unprioritized):
+  - Hero: at small zoom sizes it fills the screen and nothing else shows; its text scales a little
+    strangely.
+  - Type scale: try scaling up body copy, or everything except the hero wordmark, keeping the sizes
+    in proportion.
+  - Alignment: decide left vs center on small viewports, especially the CTA. A wider CTA must still
+    leave side margins for thumb scrolling.
+  - Mobile menu: drop the CTA; it duplicates the Contact link and is already in the hero.
+  - Video: nicer styling for a portrait video sitting in empty space.
+  - Testimonials: find an alternative to the marquee.
+  - Contact: on mobile the Contact link leaves the sage box out of view, so rework the layout and
+    reconsider having both the section heading/subtitle and the box's own. Stack email and phone,
+    and the name and organization inputs, past a breakpoint (the email wraps and the form misaligns
+    at high zoom).
+  - Footer: make email and phone links; text is a bit small and likely low contrast.
