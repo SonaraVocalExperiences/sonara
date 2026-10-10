@@ -124,6 +124,11 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   error messages are `contact.successMessage` / `errorMessage` in Sanity, read by the inline script
   from `data-success` / `data-error`. Astro's JSX types reject a bare `netlify` attribute, and it
   would do nothing there anyway, so only the static file carries it.
+- `Contact.astro` stacks below `lg` in the order intro, form, details (so the Contact link lands on
+  the form), and from `lg` puts the intro and details in the left column with the form spanning
+  both rows on the right. The DOM order is intro, form, details, so at `lg` the tab order runs
+  from the form to the details at the bottom left. The details grid wraps by itself (`auto-fit`),
+  and the name and organization inputs stack below `sm`.
 - Section anchors are Spanish and hardcoded, not CMS-editable: `#enfoque`, `#contacto`.
 - Scrolling is the browser default: no `scroll-behavior: smooth` and no scroll scripts. Smooth
   scrolling behaves differently across browsers (Chrome animates scroll restoration on refresh,
@@ -142,15 +147,21 @@ as full-width heavy quotes, a seamless marquee, and mobile responsiveness.
 
 In priority order, most important first (the design pass is internally unordered).
 
-- **Contact form needs its first real test on Netlify.** Netlify Forms only detects forms in static
-  HTML at deploy time and every page here is server-rendered, so `public/__forms.html` is the
-  definition Netlify registers (form `contacto`) and `Contact.astro` submits to it with `fetch`.
-  After the first deploy, check that Forms lists `contacto` with all five fields, send a test, and
-  set the notification recipient in the Netlify UI (Forms → Notifications; it can't live in
-  `netlify.toml`). It is a test address for now; switch to the contact email later.
-- Netlify: connect the repo, set `SANITY_API_READ_TOKEN`, add the production origin to Sanity CORS
-  (with credentials, or the embedded Studio cannot log in), register `<domain>/admin` under the
-  Sanity project's Studios so it is listed in the dashboard, and point DNS.
+- **Contact form: send the first real test.** Netlify detected `contacto` from the `forms` branch
+  deploy (`public/__forms.html`; submissions: none yet), and the notification goes to
+  dylan.kario@gmail.com, a test address for now. Fill the new `successMessage` / `errorMessage` in
+  Sanity for es, ca, and en, send a test from the branch deploy, and check the email arrives with
+  a working Reply-To. Then switch the recipient to the contact email (Forms → Submission
+  notifications; it can't live in `netlify.toml`).
+- Netlify: the repo is linked, `SANITY_API_READ_TOKEN` is set, branch deploys are on, and the
+  `netlify.app` Studio is registered in Sanity (Studios, hosting "Other") and allowed in CORS with
+  credentials, along with localhost. **At the DNS switch, repeat both Sanity settings for the
+  production domain** (the owner or Dylan, in sanity.io/manage → project `9aw7995u`): add
+  `https://www.sonaravocalexperiences.com` under API → CORS origins with credentials allowed
+  (without it the embedded Studio cannot log in there), and register
+  `https://www.sonaravocalexperiences.com/admin` under Studios → Add studio. Decide then whether to
+  keep or delete the `netlify.app` entries. Also point DNS. Branch deploy and preview hostnames are
+  not in CORS, so the Studio can't log in there; the public pages still work.
 - Finalize colors for WCAG contrast: cream text on sage is 2.2:1 (hero, marquee). Tried a darker
   sage behind cream text only (`#5b7256`, moss `#2d3925`); contact `text-dark/70` and `/40`
   placeholders also fail.
@@ -165,10 +176,8 @@ In priority order, most important first (the design pass is internally unordered
   - Mobile menu: drop the CTA; it duplicates the Contact link and is already in the hero.
   - Video: nicer styling for a portrait video sitting in empty space.
   - Testimonials: find an alternative to the marquee.
-  - Contact: on mobile the Contact link leaves the sage box out of view, so rework the layout and
-    reconsider having both the section heading/subtitle and the box's own. Stack email and phone,
-    and the name and organization inputs, past a breakpoint (the email wraps and the form misaligns
-    at high zoom).
+  - Contact: the section heading/subtitle and the form box's own heading/body are redundant; decide
+    with the owner which to drop (copy is in Sanity, so removing one means a schema change).
   - Footer: make email and phone links; text is a bit small and likely low contrast.
 - Video URL in Sanity is a placeholder (`REPLACE_WITH_VIDEO_ID`).
 - Client handoff: walk them through the Studio and write a short plain-English guide.

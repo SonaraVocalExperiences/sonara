@@ -6,12 +6,19 @@ interface Props {
 }
 
 const c = Astro.props.contact;
+
+// Underline inputs on sage. Focus thickens the underline to 2px with a shadow rather than a border so
+// nothing shifts.
+const field =
+  'w-full bg-transparent border-b border-dark/30 py-2 text-sm text-dark focus:outline-none focus:border-dark focus:shadow-[0_1px_0_0_var(--color-dark)]';
+const label = 'block text-xs font-medium text-dark mb-1';
 ---
 
 <section class="bg-cream py-24 px-6">
-  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-    <!-- Left: CTA text + contact info -->
-    <div>
+  <!-- Stacked below lg: intro, then the form (so jumping to #contacto lands on it), then the details.
+       From lg: intro and details in the left column, the form spanning both rows on the right. -->
+  <div class="max-w-6xl mx-auto grid grid-cols-1 gap-12 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-16">
+    <div class="lg:col-start-1 lg:row-start-1">
       <h2
         id="contacto"
         tabindex="-1"
@@ -19,12 +26,72 @@ const c = Astro.props.contact;
       >
         {c.heading}
       </h2>
-      <p class="text-base text-dark/80 leading-relaxed mb-12">{c.body}</p>
-      <hr class="border-dark/20 mb-10" />
-      <div class="grid grid-cols-2 gap-8">
+      <p class="text-base text-dark/80 leading-relaxed">{c.body}</p>
+    </div>
+
+    <div class="bg-sage rounded-2xl p-6 sm:p-8 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+      <h3 class="text-xl font-semibold text-dark mb-2">{c.formHeading}</h3>
+      <p class="text-sm text-dark/70 leading-relaxed mb-6">{c.formBody}</p>
+      <form
+        name="contacto"
+        method="POST"
+        action="/__forms.html"
+        data-success={c.successMessage}
+        data-error={c.errorMessage}
+        class="space-y-4"
+      >
+        <input type="hidden" name="form-name" value="contacto" />
+        <p class="hidden" aria-hidden="true">
+          <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
+        </p>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="contacto-nombre" class={label}>
+              {c.labelName}
+            </label>
+            <input id="contacto-nombre" type="text" name="nombre" autocomplete="name" class={field} />
+          </div>
+          <div>
+            <label for="contacto-organizacion" class={label}>
+              {c.labelOrg}
+            </label>
+            <input
+              id="contacto-organizacion"
+              type="text"
+              name="organizacion"
+              autocomplete="organization"
+              class={field}
+            />
+          </div>
+        </div>
+        <div>
+          <label for="contacto-email" class={label}>
+            {c.labelEmail} *
+          </label>
+          <input id="contacto-email" type="email" name="email" required autocomplete="email" class={field} />
+        </div>
+        <div>
+          <label for="contacto-mensaje" class={label}>
+            {c.labelMessage} *
+          </label>
+          <textarea id="contacto-mensaje" name="mensaje" required rows="3" class={`${field} resize-none`}></textarea>
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-dark text-cream font-semibold tracking-widest text-sm py-4 rounded-full hover:bg-dark/80 transition-colors mt-4"
+        >
+          {c.submitText}
+        </button>
+        <p role="status" class="text-sm text-dark leading-relaxed" data-status></p>
+      </form>
+    </div>
+
+    <div class="border-t border-dark/20 pt-10 lg:col-start-1 lg:row-start-2">
+      <!-- Wraps to one column as the container narrows, so a long email never has to break mid-word -->
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,15rem),1fr))] gap-8">
         <div>
           <p class="text-xs font-bold tracking-widest text-dark/50 mb-2">{c.labelWorkshops}</p>
-          <a href={c.email && `mailto:${c.email}`} class="text-sm font-medium text-dark break-all hover:underline">
+          <a href={c.email && `mailto:${c.email}`} class="text-sm font-medium text-dark break-words hover:underline">
             {c.email}
           </a>
         </div>
@@ -47,72 +114,6 @@ const c = Astro.props.contact;
           </a>
         </div>
       </div>
-    </div>
-
-    <!-- Right: Contact form -->
-    <div class="bg-sage rounded-2xl p-8">
-      <h3 class="text-xl font-semibold text-dark mb-2">{c.formHeading}</h3>
-      <p class="text-sm text-dark/70 leading-relaxed mb-6">{c.formBody}</p>
-      <form
-        name="contacto"
-        method="POST"
-        action="/__forms.html"
-        data-success={c.successMessage}
-        data-error={c.errorMessage}
-        class="space-y-4"
-      >
-        <input type="hidden" name="form-name" value="contacto" />
-        <p class="hidden" aria-hidden="true">
-          <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
-        </p>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-medium text-dark mb-1">{c.labelName}</label>
-            <input
-              type="text"
-              name="nombre"
-              placeholder={c.labelName}
-              class="w-full bg-transparent border-b border-dark/30 py-2 text-sm text-dark placeholder:text-dark/40 focus:outline-none focus:border-dark"
-            />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-dark mb-1">{c.labelOrg}</label>
-            <input
-              type="text"
-              name="organizacion"
-              placeholder={c.labelOrg}
-              class="w-full bg-transparent border-b border-dark/30 py-2 text-sm text-dark placeholder:text-dark/40 focus:outline-none focus:border-dark"
-            />
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-dark mb-1">{c.labelEmail} *</label>
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder={c.labelEmail}
-            class="w-full bg-transparent border-b border-dark/30 py-2 text-sm text-dark placeholder:text-dark/40 focus:outline-none focus:border-dark"
-          />
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-dark mb-1">{c.labelMessage} *</label>
-          <textarea
-            name="mensaje"
-            required
-            rows="3"
-            placeholder={c.labelMessage}
-            class="w-full bg-transparent border-b border-dark/30 py-2 text-sm text-dark placeholder:text-dark/40 focus:outline-none focus:border-dark resize-none"
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          class="w-full bg-dark text-cream font-semibold tracking-widest text-sm py-4 rounded-full hover:bg-dark/80 transition-colors mt-4"
-        >
-          {c.submitText}
-        </button>
-        <p role="status" class="text-sm text-dark leading-relaxed" data-status></p>
-      </form>
     </div>
   </div>
 </section>
