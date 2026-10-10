@@ -176,20 +176,6 @@ export const homePage = defineType({
         validation: (rule) => rule.required(),
       }),
       defineField({
-        name: 'successMessage',
-        title: 'Message sent',
-        description: 'Shown after the form is sent successfully.',
-        type: 'internationalizedArrayText',
-        validation: (rule) => rule.required(),
-      }),
-      defineField({
-        name: 'errorMessage',
-        title: 'Message failed',
-        description: 'Shown when the form could not be sent.',
-        type: 'internationalizedArrayText',
-        validation: (rule) => rule.required(),
-      }),
-      defineField({
         name: 'email',
         title: 'Email address',
         type: 'string',

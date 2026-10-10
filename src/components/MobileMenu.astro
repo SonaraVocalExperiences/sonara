@@ -35,7 +35,7 @@ const { menuLabel, closeLabel } = messagesOf(Astro.currentLocale);
 ---
 
 <button type="button" class="press-ring flex size-12 items-center justify-center md:hidden" aria-haspopup="dialog">
-  <Icon name="menu" class="size-6" />
+  <Icon name="menu" />
   <span class="sr-only">{menuLabel}</span>
 </button>
 
@@ -43,7 +43,7 @@ const { menuLabel, closeLabel } = messagesOf(Astro.currentLocale);
   <div class="mx-auto max-w-6xl px-6 pb-8">
     <div class="flex h-(--header-height) items-center justify-end">
       <button type="button" class="press-ring -me-3 flex size-12 items-center justify-center">
-        <Icon name="close" class="size-6" />
+        <Icon name="close" />
         <span class="sr-only">{closeLabel}</span>
       </button>
     </div>

@@ -50,7 +50,8 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   Visual Editing's "Open in Studio" links (`/admin/intent/...`, built from `stega.studioUrl`) 404.
 - `sanity.constants.ts` is the single source for project ID, dataset, and locales (ids, Studio
   titles, switcher labels; the first is the default) plus `messages`, a dictionary keyed by locale
-  id of the few accessible names that have no visible text and so live in code, not Sanity
+  id of the few strings that live in code, not Sanity: accessible names with no visible text, and
+  the contact form's sent/failed messages, which the owner shouldn't have to maintain
   (`messagesOf(Astro.currentLocale)`). Both are imported by `sanity.config.ts`, `astro.config.mjs`,
   and `src/lib/sanity/locale.ts`. Never hardcode a locale code elsewhere. Components get the
   current locale from `siteLocale(Astro.currentLocale)`, not from props. Short ids (`es`, `ca`,
@@ -120,9 +121,16 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   Studio brings its own client v8 as a dependency, which is expected.
 - The contact form's field names are Spanish (`nombre`, `organización`, `mensaje`, `trampa` for the
   honeypot) except `email`, which Netlify uses as the Reply-To of notification emails. The form in
-  `Contact.astro` and the one in `public/__forms.html` must keep identical names. The success and
-  error messages are `contact.successMessage` / `errorMessage` in Sanity, read by the inline script
-  from `data-success` / `data-error`. Astro's JSX types reject a bare `netlify` attribute, and it
+  `Contact.astro` and the one in `public/__forms.html` must keep identical names. The sent
+  and failed messages are `formSentTitle` / `formSent` / `formFailedTitle` / `formFailed` in
+  `messages`, rendered into `<template data-sent>` / `<template data-failed>`; the submit script
+  copies one into the empty `role="status"` region (which must stay directly before the form, for
+  its `has-[+form]` margin) and calls `scrollIntoView({ block: 'nearest' })` so it isn't missed on a
+  tall phone card (instant, not smooth, so it doesn't conflict with the scrolling note below). Both
+  results focus the panel (VoiceOver reads a live region alone in its default voice, not the page's
+  language, but speaks a focused element in it); a send also hides the form, a failure keeps it. The icons are
+  `text-success` / `text-error` (theme tokens in `global.css`, chosen for 4:1+ on the cream
+  panel). Astro's JSX types reject a bare `netlify` attribute, and it
   would do nothing there anyway, so only the static file carries it.
   The notification email's subject is a hidden `subject` field (in both forms, with a default). Netlify
   documents only the variables `%{formName}`, `%{siteName}` and `%{submissionId}` there, not field
@@ -154,9 +162,8 @@ In priority order, most important first (the design pass is internally unordered
 
 - **Contact form: finish the setup.** Submissions work end to end on the `netlify.app` deploy:
   Netlify registers `contacto` from `public/__forms.html`, records each one, and emails
-  dylan.kario@gmail.com, a test address for now. Still to check: that `contact.successMessage` /
-  `errorMessage` are filled in Sanity for es, ca, and en and show on the page, and that replying to
-  a notification goes to the visitor (Reply-To comes from the `email` field). Then switch the
+  dylan.kario@gmail.com, a test address for now. Still to check: that the sent and failed messages show on the page,
+  and that replying to a notification goes to the visitor (Reply-To comes from the `email` field). Then switch the
   recipient to the contact email (Forms → Submission notifications; it can't live in
   `netlify.toml`).
 - **Notification email:** the subject now names the sender (see the form notes above); test it on a

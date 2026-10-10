@@ -1,28 +1,47 @@
 ---
-/** Small stroke icons (24px grid, drawn in the current text color), decorative: the control that
- *  holds one carries the accessible name. */
+/** Small stroke icons, decorative: the control that holds one carries the accessible name. Drawn in
+ *  the current text color on a 24px grid, shown at `size` `md` (24px, the default) or `sm` (20px).
+ *  An icon with an `sm` drawing has it redrawn on a 20px grid, so its lines land on whole pixels
+ *  instead of a scaled-down 24px drawing's fractions; without one, `sm` scales the 24px drawing. */
 import type { HTMLAttributes } from 'astro/types';
 
-const paths = {
-  menu: 'M4 7h16M4 12h16M4 17h16',
-  close: 'M6 6l12 12M18 6L6 18',
+const icons: Record<string, { md: string; sm?: string }> = {
+  menu: { md: 'M4 7h16M4 12h16M4 17h16' },
+  close: { md: 'M6 6l12 12M18 6L6 18' },
+  'check-circle': {
+    md: 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM7.5 12.5l3 3 6-7',
+    sm: 'M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM6 10l3 3 5-6',
+  },
+  error: {
+    md: 'M13.55 2.88L21.58 16.47A3 3 0 0 1 19 21L5 21A3 3 0 0 1 2.42 16.47L10.45 2.88A1.8 1.8 0 0 1 13.55 2.88ZM12 8.5v5M12 17.5h.01',
+    sm: 'M11.28 2.72L17.64 13.2A2.5 2.5 0 0 1 15.5 17L4.5 17A2.5 2.5 0 0 1 2.36 13.2L8.72 2.72A1.5 1.5 0 0 1 11.28 2.72ZM10 6v5M10 14h.01',
+  },
+};
+
+const sizes = {
+  sm: 'size-5',
+  md: 'size-6',
 };
 
 interface Props extends HTMLAttributes<'svg'> {
-  name: keyof typeof paths;
+  name: keyof typeof icons;
+  size?: keyof typeof sizes;
 }
 
-const { name, ...props } = Astro.props;
+const { name, size = 'md', class: className, ...props } = Astro.props;
+const redrawn = size === 'sm' && icons[name].sm;
 ---
 
 <svg
-  viewBox="0 0 24 24"
+  class:list={[sizes[size], className]}
+  viewBox={redrawn ? '0 0 20 20' : '0 0 24 24'}
   aria-hidden="true"
   fill="none"
   stroke="currentColor"
   stroke-width="2"
   stroke-linecap="round"
+  stroke-linejoin="round"
   {...props}
 >
-  <path d={paths[name]}></path>
+  <path d={redrawn || icons[name].md}></path>
 </svg>

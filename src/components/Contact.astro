@@ -1,12 +1,15 @@
 ---
+import Icon from './Icon.astro';
 import RequiredMark from './RequiredMark.astro';
 import type { HomeContent } from '../lib/sanity/getHomeContent';
+import { messagesOf } from '../lib/sanity/locale';
 
 interface Props {
   contact: NonNullable<HomeContent['contact']>;
 }
 
 const c = Astro.props.contact;
+const { formSentTitle, formSent, formFailedTitle, formFailed } = messagesOf(Astro.currentLocale);
 
 // Underline inputs on sage. Focus thickens the underline to 2px with a shadow rather than a border so
 // nothing shifts.
@@ -30,17 +33,37 @@ const label = 'block text-xs font-medium text-dark mb-1';
       <p class="text-base text-dark/80 leading-relaxed">{c.body}</p>
     </div>
 
-    <div class="bg-sage rounded-2xl p-6 sm:p-8 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+    <div class="bg-sage rounded-2xl p-6 sm:p-8 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start" data-contact>
       <h3 class="text-xl font-semibold text-dark mb-2">{c.formHeading}</h3>
       <p class="text-sm text-dark/70 leading-relaxed mb-6">{c.formBody}</p>
-      <form
-        name="contacto"
-        method="POST"
-        action="/__forms.html"
-        data-success={c.successMessage}
-        data-error={c.errorMessage}
-        class="space-y-4"
-      >
+      <!-- The result panels, copied into the live region below by the script -->
+      <template data-sent>
+        <div
+          tabindex="-1"
+          class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
+        >
+          <p class="mb-3 flex justify-between gap-4 font-bold">
+            {formSentTitle}
+            <Icon name="check-circle" size="sm" class="shrink-0 text-success" />
+          </p>
+          <p>{formSent}</p>
+        </div>
+      </template>
+      <template data-failed>
+        <div
+          tabindex="-1"
+          class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
+        >
+          <p class="mb-3 flex justify-between gap-4 font-bold">
+            {formFailedTitle}
+            <Icon name="error" size="sm" class="shrink-0 text-error" />
+          </p>
+          <p>{formFailed}</p>
+        </div>
+      </template>
+      <!-- Live region, empty until a template is copied in. It must stay right before the form. -->
+      <div role="status" data-status class="not-empty:has-[+form:not([hidden])]:mb-6"></div>
+      <form name="contacto" method="POST" action="/__forms.html" class="space-y-4">
         <input type="hidden" name="form-name" value="contacto" />
         <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Sonara" />
         <p class="hidden" aria-hidden="true">
@@ -82,7 +105,6 @@ const label = 'block text-xs font-medium text-dark mb-1';
         >
           {c.submitText}
         </button>
-        <p role="status" class="text-sm text-dark leading-relaxed" data-status></p>
       </form>
     </div>
 
@@ -120,15 +142,29 @@ const label = 'block text-xs font-medium text-dark mb-1';
 
 <script>
   // Submits with fetch so the page doesn't navigate (every page is server-rendered, so Netlify
-  // only knows the form from public/__forms.html).
-  document.querySelectorAll<HTMLFormElement>('form[name="contacto"]').forEach((form) => {
-    const status = form.querySelector<HTMLElement>('[data-status]');
+  // only knows the form from public/__forms.html). The result is a server-rendered <template>
+  // copied into the live region, so the messages stay localized and out of the script.
+  document.querySelectorAll<HTMLElement>('[data-contact]').forEach((contact) => {
+    const form = contact.querySelector<HTMLFormElement>('form')!;
+    const status = contact.querySelector<HTMLElement>('[data-status]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    const show = (name: 'sent' | 'failed') => {
+      const template = contact.querySelector<HTMLTemplateElement>(`template[data-${name}]`)!;
+      status.replaceChildren(template.content.cloneNode(true));
+      // The result sits above the form, so bring it into view without moving if it already is.
+      status.scrollIntoView({ block: 'nearest' });
+      // A send hides the form, which would drop keyboard focus. Either way, focus moves to the panel:
+      // VoiceOver speaks a focused element in the page's language, but reads a live region alone in
+      // its default voice.
+      if (name === 'sent') form.hidden = true;
+      status.querySelector<HTMLElement>('[tabindex]')?.focus({ preventScroll: true });
+    };
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (button) button.disabled = true;
-      if (status) status.textContent = '';
+      status.replaceChildren();
       try {
         const data = new FormData(form);
         // Subject of the notification email, for the owner (Spanish whatever the page language).
@@ -151,9 +187,9 @@ const label = 'block text-xs font-medium text-dark mb-1';
         });
         if (!response.ok) throw new Error(String(response.status));
         form.reset();
-        if (status) status.textContent = form.dataset.success ?? '';
+        show('sent');
       } catch {
-        if (status) status.textContent = form.dataset.error ?? '';
+        show('failed');
       } finally {
         if (button) button.disabled = false;
       }

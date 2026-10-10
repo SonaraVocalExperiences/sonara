@@ -38,15 +38,49 @@ export type LocaleId = (typeof locales)[number]['id'];
 
 export const defaultLocale: LocaleId = locales[0].id;
 
-/** UI strings that live in code rather than Sanity (accessible names with no visible text), keyed
- *  by locale id. `Record<LocaleId, …>` makes a new locale fail to compile until it has every one.
+/** UI strings that live in code rather than Sanity, keyed by locale id: accessible names with no
+ *  visible text, and fixed messages the owner shouldn't have to maintain. `Record<LocaleId, …>`
+ *  makes a new locale fail to compile until it has every one.
  *  - `switcherLabel` names the language switcher's `<nav>` landmark.
  *  - `menuLabel` names the main `<nav>` landmark, the small-screen menu button, and its dialog.
- *  - `closeLabel` names the menu dialog's close button. */
-export type Messages = { switcherLabel: string; menuLabel: string; closeLabel: string };
+ *  - `closeLabel` names the menu dialog's close button.
+ *  - `formSentTitle`, `formSent`, `formFailedTitle` and `formFailed` are the contact form's result messages. */
+export type Messages = {
+  switcherLabel: string;
+  menuLabel: string;
+  closeLabel: string;
+  formSentTitle: string;
+  formSent: string;
+  formFailedTitle: string;
+  formFailed: string;
+};
 
 export const messages: Record<LocaleId, Messages> = {
-  es: { switcherLabel: 'Idioma', menuLabel: 'Menú', closeLabel: 'Cerrar' },
-  ca: { switcherLabel: 'Idioma', menuLabel: 'Menú', closeLabel: 'Tancar' },
-  en: { switcherLabel: 'Language', menuLabel: 'Menu', closeLabel: 'Close' },
+  es: {
+    switcherLabel: 'Idioma',
+    menuLabel: 'Menú',
+    closeLabel: 'Cerrar',
+    formSentTitle: 'Mensaje enviado correctamente',
+    formSent: 'Gracias por tu mensaje. Nos pondremos en contacto contigo pronto.',
+    formFailedTitle: 'Algo ha salido mal',
+    formFailed: 'No se ha podido enviar el mensaje. Inténtalo de nuevo.',
+  },
+  ca: {
+    switcherLabel: 'Idioma',
+    menuLabel: 'Menú',
+    closeLabel: 'Tancar',
+    formSentTitle: 'Missatge enviat correctament',
+    formSent: 'Gràcies pel teu missatge. Ens posarem en contacte amb tu aviat.',
+    formFailedTitle: 'Alguna cosa ha anat malament',
+    formFailed: "No s'ha pogut enviar el missatge. Torna-ho a provar.",
+  },
+  en: {
+    switcherLabel: 'Language',
+    menuLabel: 'Menu',
+    closeLabel: 'Close',
+    formSentTitle: 'Message sent successfully',
+    formSent: "Thank you for your message. We'll get in touch with you soon.",
+    formFailedTitle: 'Something went wrong',
+    formFailed: 'Message failed to send. Please try again.',
+  },
 };
