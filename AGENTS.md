@@ -147,12 +147,19 @@ as full-width heavy quotes, a seamless marquee, and mobile responsiveness.
 
 In priority order, most important first (the design pass is internally unordered).
 
-- **Contact form: send the first real test.** Netlify detected `contacto` from the `forms` branch
-  deploy (`public/__forms.html`; submissions: none yet), and the notification goes to
-  dylan.kario@gmail.com, a test address for now. Fill the new `successMessage` / `errorMessage` in
-  Sanity for es, ca, and en, send a test from the branch deploy, and check the email arrives with
-  a working Reply-To. Then switch the recipient to the contact email (Forms → Submission
-  notifications; it can't live in `netlify.toml`).
+- **Contact form: finish the setup.** Submissions work end to end on the `netlify.app` deploy:
+  Netlify registers `contacto` from `public/__forms.html`, records each one, and emails
+  dylan.kario@gmail.com, a test address for now. Still to check: that `contact.successMessage` /
+  `errorMessage` are filled in Sanity for es, ca, and en and show on the page, and that replying to
+  a notification goes to the visitor (Reply-To comes from the `email` field). Then switch the
+  recipient to the contact email (Forms → Submission notifications; it can't live in
+  `netlify.toml`).
+- **Clean up the notification email.** It arrives from `formresponses@netlify.com` as plain text
+  (subject "Sonara contact submission", then a label and value per field in form order). Decide what
+  to improve: the subject (a hidden `subject` field may be able to carry the visitor's name or
+  organization), the field order, or less noise. Netlify's free plan allows little restyling, and a
+  custom email through a form-handling function would add a service, so check what is possible
+  before building anything.
 - Netlify: the repo is linked, `SANITY_API_READ_TOKEN` is set, branch deploys are on, and the
   `netlify.app` Studio is registered in Sanity (Studios, hosting "Other") and allowed in CORS with
   credentials, along with localhost. **At the DNS switch, repeat both Sanity settings for the
