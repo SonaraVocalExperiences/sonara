@@ -10,7 +10,7 @@
   --color-error: #b3402e; /* 4.5:1; a brick red leaning to terracotta so it sits with the sage */
 
   --duration-hover: 175ms; /* default for Tailwind's transition-* utilities and the ring */
-  --duration-menu: 400ms; /* narrow viewport menu slide */
+  --duration-menu: 400ms; /* narrow viewport menu slide; also the contact form's panel and form reveals */
   --default-transition-duration: var(--duration-hover);
 
   --header-height: 4.5rem; /* Nav height, also the menu sheet's header row */

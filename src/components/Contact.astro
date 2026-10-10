@@ -38,74 +38,94 @@ const label = 'block text-xs font-medium text-dark mb-1';
       <p class="text-sm text-dark/70 leading-relaxed mb-6">{c.formBody}</p>
       <!-- The result panels, copied into the live region below by the script -->
       <template data-sent>
-        <div
-          tabindex="-1"
-          class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
-        >
-          <p class="mb-3 flex justify-between gap-4 font-bold">
-            {formSentTitle}
-            <Icon name="check-circle" size="sm" class="shrink-0 text-success" />
-          </p>
-          <p>{formSent}</p>
+        <div class="reveal">
+          <div class="reveal__body" data-body>
+            <div
+              data-result="sent"
+              tabindex="-1"
+              class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
+            >
+              <p class="mb-3 flex justify-between gap-4 font-bold">
+                {formSentTitle}
+                <Icon name="check-circle" size="sm" class="shrink-0 text-success" />
+              </p>
+              <p>{formSent}</p>
+            </div>
+          </div>
         </div>
       </template>
       <template data-failed>
-        <div
-          tabindex="-1"
-          class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
-        >
-          <p class="mb-3 flex justify-between gap-4 font-bold">
-            {formFailedTitle}
-            <Icon name="error" size="sm" class="shrink-0 text-error" />
-          </p>
-          <p>{formFailed}</p>
+        <div class="reveal">
+          <div class="reveal__body" data-body>
+            <div
+              data-result="failed"
+              tabindex="-1"
+              class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
+            >
+              <p class="mb-3 flex justify-between gap-4 font-bold">
+                {formFailedTitle}
+                <Icon name="error" size="sm" class="shrink-0 text-error" />
+              </p>
+              <p>{formFailed}</p>
+            </div>
+          </div>
         </div>
       </template>
       <!-- Live region, empty until a template is copied in. It must stay right before the form. -->
-      <div role="status" data-status class="not-empty:has-[+form:not([hidden])]:mb-6"></div>
-      <form name="contacto" method="POST" action="/__forms.html" class="space-y-4">
-        <input type="hidden" name="form-name" value="contacto" />
-        <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Sonara" />
-        <p class="hidden" aria-hidden="true">
-          <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
-        </p>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label for="contacto-nombre" class={label}>
-              {c.labelName}
-            </label>
-            <input id="contacto-nombre" type="text" name="nombre" autocomplete="name" class={field} />
-          </div>
-          <div>
-            <label for="contacto-organizacion" class={label}>
-              {c.labelOrg}
-            </label>
-            <input
-              id="contacto-organizacion"
-              type="text"
-              name="organización"
-              autocomplete="organization"
-              class={field}
-            />
-          </div>
+      <div role="status" data-status></div>
+      <div class="reveal" data-form>
+        <div class="reveal__body">
+          <form name="contacto" method="POST" action="/__forms.html" class="space-y-4">
+            <input type="hidden" name="form-name" value="contacto" />
+            <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Sonara" />
+            <p class="hidden" aria-hidden="true">
+              <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
+            </p>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label for="contacto-nombre" class={label}>
+                  {c.labelName}
+                </label>
+                <input id="contacto-nombre" type="text" name="nombre" autocomplete="name" class={field} />
+              </div>
+              <div>
+                <label for="contacto-organizacion" class={label}>
+                  {c.labelOrg}
+                </label>
+                <input
+                  id="contacto-organizacion"
+                  type="text"
+                  name="organización"
+                  autocomplete="organization"
+                  class={field}
+                />
+              </div>
+            </div>
+            <div>
+              <!-- prettier-ignore -->
+              <label for="contacto-email" class={label}>{c.labelEmail}<RequiredMark /></label>
+              <input id="contacto-email" type="email" name="email" required autocomplete="email" class={field} />
+            </div>
+            <div>
+              <!-- prettier-ignore -->
+              <label for="contacto-mensaje" class={label}>{c.labelMessage}<RequiredMark /></label>
+              <textarea
+                id="contacto-mensaje"
+                name="mensaje"
+                required
+                rows="3"
+                class={`${field} resize-none`}
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-dark text-cream font-semibold tracking-widest text-sm py-4 rounded-full hover:bg-dark/80 transition-colors mt-4"
+            >
+              {c.submitText}
+            </button>
+          </form>
         </div>
-        <div>
-          <!-- prettier-ignore -->
-          <label for="contacto-email" class={label}>{c.labelEmail}<RequiredMark /></label>
-          <input id="contacto-email" type="email" name="email" required autocomplete="email" class={field} />
-        </div>
-        <div>
-          <!-- prettier-ignore -->
-          <label for="contacto-mensaje" class={label}>{c.labelMessage}<RequiredMark /></label>
-          <textarea id="contacto-mensaje" name="mensaje" required rows="3" class={`${field} resize-none`}></textarea>
-        </div>
-        <button
-          type="submit"
-          class="w-full bg-dark text-cream font-semibold tracking-widest text-sm py-4 rounded-full hover:bg-dark/80 transition-colors mt-4"
-        >
-          {c.submitText}
-        </button>
-      </form>
+      </div>
     </div>
 
     <div class="border-t border-dark/20 pt-10 lg:col-start-1 lg:row-start-2">
@@ -146,25 +166,35 @@ const label = 'block text-xs font-medium text-dark mb-1';
   // copied into the live region, so the messages stay localized and out of the script.
   document.querySelectorAll<HTMLElement>('[data-contact]').forEach((contact) => {
     const form = contact.querySelector<HTMLFormElement>('form')!;
+    const formReveal = contact.querySelector<HTMLElement>('[data-form]')!;
     const status = contact.querySelector<HTMLElement>('[data-status]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
 
     const show = (name: 'sent' | 'failed') => {
       const template = contact.querySelector<HTMLTemplateElement>(`template[data-${name}]`)!;
-      status.replaceChildren(template.content.cloneNode(true));
+      const body = status.querySelector<HTMLElement>('[data-body]');
+      if (!body) {
+        status.replaceChildren(template.content.cloneNode(true));
+      } else if (body.firstElementChild?.getAttribute('data-result') !== name) {
+        // A panel is already showing: swap its content in place instead of animating a new one in.
+        body.replaceChildren(template.content.querySelector('[data-result]')!.cloneNode(true));
+      }
+      // A send collapses and fades the form out; `inert` keeps it out of reach while it does.
+      if (name === 'sent') {
+        form.inert = true;
+        formReveal.dataset.collapsed = '';
+      }
       // The result sits above the form, so bring it into view without moving if it already is.
       status.scrollIntoView({ block: 'nearest' });
-      // A send hides the form, which would drop keyboard focus. Either way, focus moves to the panel:
-      // VoiceOver speaks a focused element in the page's language, but reads a live region alone in
-      // its default voice.
-      if (name === 'sent') form.hidden = true;
-      status.querySelector<HTMLElement>('[tabindex]')?.focus({ preventScroll: true });
+      // The form can disappear under focus, and VoiceOver speaks a focused element in the page's
+      // language but reads a live region alone in its default voice, so focus the panel. This also
+      // re-announces a repeated failure, which leaves the panel as it is.
+      status.querySelector<HTMLElement>('[data-result]')?.focus({ preventScroll: true });
     };
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (button) button.disabled = true;
-      status.replaceChildren();
       try {
         const data = new FormData(form);
         // Subject of the notification email, for the owner (Spanish whatever the page language).
@@ -186,7 +216,6 @@ const label = 'block text-xs font-medium text-dark mb-1';
           body,
         });
         if (!response.ok) throw new Error(String(response.status));
-        form.reset();
         show('sent');
       } catch {
         show('failed');
@@ -196,3 +225,58 @@ const label = 'block text-xs font-medium text-dark mb-1';
     });
   });
 </script>
+
+<style>
+  /* The result panel and the form animate their height through a one-row grid, the cross-browser
+     way to animate to and from `auto`: the row runs between 0fr and 1fr while the content
+     (min-height 0, overflow hidden) follows. Only they animate; the sage card just resizes with
+     them. */
+  .reveal {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+
+  .reveal__body {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* The gap between the panel and the form belongs to the form, so it collapses with it. */
+  [data-status]:not(:empty) + .reveal > .reveal__body {
+    padding-top: 1.5rem;
+  }
+
+  /* The form fades out as it collapses. `visibility` rather than `display`: it animates (holding
+     "visible" until the end of the exit), and the collapsed form leaves the accessibility tree and
+     tab order once it is hidden. */
+  .reveal[data-collapsed] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      transition: grid-template-rows var(--duration-menu) var(--ease-press);
+    }
+
+    .reveal[data-form] {
+      transition:
+        grid-template-rows var(--duration-menu) var(--ease-press),
+        opacity var(--duration-menu) var(--ease-press),
+        visibility var(--duration-menu);
+    }
+
+    .reveal__body {
+      transition: padding-top var(--duration-menu) var(--ease-press);
+    }
+
+    /* A panel inserted into the live region opens up from nothing, without fading, which resizes the
+       sage card with it; the form, present at load, doesn't animate in. */
+    @starting-style {
+      [data-status] > .reveal {
+        grid-template-rows: 0fr;
+      }
+    }
+  }
+</style>

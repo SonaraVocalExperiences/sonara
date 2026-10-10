@@ -124,12 +124,18 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   `Contact.astro` and the one in `public/__forms.html` must keep identical names. The sent
   and failed messages are `formSentTitle` / `formSent` / `formFailedTitle` / `formFailed` in
   `messages`, rendered into `<template data-sent>` / `<template data-failed>`; the submit script
-  copies one into the empty `role="status"` region (which must stay directly before the form, for
-  its `has-[+form]` margin) and calls `scrollIntoView({ block: 'nearest' })` so it isn't missed on a
-  tall phone card (instant, not smooth, so it doesn't conflict with the scrolling note below). Both
-  results focus the panel (VoiceOver reads a live region alone in its default voice, not the page's
-  language, but speaks a focused element in it); a send also hides the form, a failure keeps it. The icons are
-  `text-success` / `text-error` (theme tokens in `global.css`, chosen for 4:1+ on the cream
+  copies one into the empty `role="status"` region, calls `scrollIntoView({ block: 'nearest' })` so
+  it isn't missed on a tall phone card (instant, not smooth, so it doesn't conflict with the
+  scrolling note below), and focuses the panel (VoiceOver reads a live region alone in its default
+  voice, not the page's language, but speaks a focused element in it). A repeated failure leaves the
+  panel as it is and only refocuses it; a failure after a success can't happen. A send collapses
+  and fades the form (`inert`, then `visibility: hidden` at the end), a failure keeps it. The
+  panel and the form animate their height through a one-row grid (`.reveal`, 0fr to 1fr, the
+  cross-browser way to animate to and from `auto`), the panel's entry with `@starting-style` (height only, no fade; only the form fades), with
+  `--duration-menu` and `--ease-press`, only under `prefers-reduced-motion: no-preference` like the
+  menu; the sage card isn't animated itself. The gap under the panel belongs to the form so it
+  collapses with it, and the status region must stay directly before the form for that rule. The
+  icons are `text-success` / `text-error` (theme tokens in `global.css`, chosen for 4:1+ on the cream
   panel). Astro's JSX types reject a bare `netlify` attribute, and it
   would do nothing there anyway, so only the static file carries it.
   The notification email's subject is a hidden `subject` field (in both forms, with a default). Netlify
