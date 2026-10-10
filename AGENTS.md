@@ -6,7 +6,7 @@ locale at `/`, with `/ca` and `/en`.
 
 ## Toolchain
 
-Node 24 (`.nvmrc`) and pnpm 12.9.1 (`packageManager`), installed standalone.
+Node 24 (`.nvmrc`) and pnpm 12.10.1 (`packageManager`), installed standalone.
 
 Verify every change with `pnpm lint`, `pnpm check`, `pnpm format:check`, and `pnpm build`. All
 must pass. CI (`.github/workflows/ci.yml`) runs all but the build, which Netlify covers.
@@ -134,17 +134,17 @@ as full-width heavy quotes, a seamless marquee, and mobile responsiveness.
 
 ## Open items
 
+In priority order, most important first (the design pass is internally unordered).
+
 - **Contact form will not receive submissions as built.** Netlify Forms only detects forms in static
   HTML at deploy time, and every page here is server-rendered. Add a static form definition (e.g.
   `public/__forms.html` with matching fields) and submit to it with `fetch`.
-- Finalize colors for WCAG contrast: cream text on sage is 2.2:1 (hero, marquee). Tried a darker
-  sage behind cream text only (`#5b7256`, moss `#2d3925`); contact `text-dark/70` and `/40`
-  placeholders also fail.
-- Video URL in Sanity is a placeholder (`REPLACE_WITH_VIDEO_ID`).
 - Netlify: connect the repo, set `SANITY_API_READ_TOKEN`, add the production origin to Sanity CORS
   (with credentials, or the embedded Studio cannot log in), register `<domain>/admin` under the
   Sanity project's Studios so it is listed in the dashboard, and point DNS.
-- Client handoff: walk them through the Studio and write a short plain-English guide.
+- Finalize colors for WCAG contrast: cream text on sage is 2.2:1 (hero, marquee). Tried a darker
+  sage behind cream text only (`#5b7256`, moss `#2d3925`); contact `text-dark/70` and `/40`
+  placeholders also fail.
 - Decide the hero with the owner: plain (`/`) or shell (`/?hero=shell`).
 - **Design pass** (unprioritized):
   - Hero: at small zoom sizes it fills the screen and nothing else shows; its text scales a little
@@ -161,3 +161,5 @@ as full-width heavy quotes, a seamless marquee, and mobile responsiveness.
     and the name and organization inputs, past a breakpoint (the email wraps and the form misaligns
     at high zoom).
   - Footer: make email and phone links; text is a bit small and likely low contrast.
+- Video URL in Sanity is a placeholder (`REPLACE_WITH_VIDEO_ID`).
+- Client handoff: walk them through the Studio and write a short plain-English guide.

@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@12.9.1",
+  "packageManager": "pnpm@12.10.1",
   "engines": {
     "node": ">=24.16.0"
   },
@@ -29,13 +29,13 @@
     "@sanity/visual-editing": "^5.7.3",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.5",
-    "groq": "^6.17.0",
+    "groq": "^6.18.0",
     "react": "^19.3.0",
     "react-compiler-runtime": "1.0.0",
     "react-dom": "^19.3.0",
     "react-is": "^19.3.0",
-    "sanity": "^6.17.0",
-    "sanity-plugin-internationalized-array": "^5.3.2",
+    "sanity": "^6.18.0",
+    "sanity-plugin-internationalized-array": "^5.3.3",
     "styled-components": "^6.5.3",
     "tailwindcss": "^4.3.3"
   },
