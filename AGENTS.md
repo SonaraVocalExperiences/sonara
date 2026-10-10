@@ -118,6 +118,12 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
 - `@sanity/client` stays on v7 because visual-editing v5 declares `^7.24.0` as its peer. Nothing
   here needs v8; move both up together once `@sanity/astro` adopts visual-editing v6. The embedded
   Studio brings its own client v8 as a dependency, which is expected.
+- The contact form's field names are Spanish (`nombre`, `organizacion`, `mensaje`, `trampa` for the
+  honeypot) except `email`, which Netlify uses as the Reply-To of notification emails. The form in
+  `Contact.astro` and the one in `public/__forms.html` must keep identical names. The success and
+  error messages are `contact.successMessage` / `errorMessage` in Sanity, read by the inline script
+  from `data-success` / `data-error`. Astro's JSX types reject a bare `netlify` attribute, and it
+  would do nothing there anyway, so only the static file carries it.
 - Section anchors are Spanish and hardcoded, not CMS-editable: `#enfoque`, `#contacto`.
 - Scrolling is the browser default: no `scroll-behavior: smooth` and no scroll scripts. Smooth
   scrolling behaves differently across browsers (Chrome animates scroll restoration on refresh,
@@ -136,9 +142,12 @@ as full-width heavy quotes, a seamless marquee, and mobile responsiveness.
 
 In priority order, most important first (the design pass is internally unordered).
 
-- **Contact form will not receive submissions as built.** Netlify Forms only detects forms in static
-  HTML at deploy time, and every page here is server-rendered. Add a static form definition (e.g.
-  `public/__forms.html` with matching fields) and submit to it with `fetch`.
+- **Contact form needs its first real test on Netlify.** Netlify Forms only detects forms in static
+  HTML at deploy time and every page here is server-rendered, so `public/__forms.html` is the
+  definition Netlify registers (form `contacto`) and `Contact.astro` submits to it with `fetch`.
+  After the first deploy, check that Forms lists `contacto` with all five fields, send a test, and
+  set the notification recipient in the Netlify UI (Forms → Notifications; it can't live in
+  `netlify.toml`). It is a test address for now; switch to the contact email later.
 - Netlify: connect the repo, set `SANITY_API_READ_TOKEN`, add the production origin to Sanity CORS
   (with credentials, or the embedded Studio cannot log in), register `<domain>/admin` under the
   Sanity project's Studios so it is listed in the dashboard, and point DNS.

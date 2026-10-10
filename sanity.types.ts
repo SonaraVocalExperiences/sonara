@@ -87,6 +87,8 @@ export type HomePage = {
     labelEmail?: InternationalizedArrayString;
     labelMessage?: InternationalizedArrayString;
     submitText?: InternationalizedArrayString;
+    successMessage?: InternationalizedArrayText;
+    errorMessage?: InternationalizedArrayText;
     email?: string;
     phone?: string;
     linkedinUrl?: string;
@@ -330,6 +332,8 @@ export type HomePageQueryResult = {
     labelEmail?: InternationalizedArrayString;
     labelMessage?: InternationalizedArrayString;
     submitText?: InternationalizedArrayString;
+    successMessage?: InternationalizedArrayText;
+    errorMessage?: InternationalizedArrayText;
     email?: string;
     phone?: string;
     linkedinUrl?: string;

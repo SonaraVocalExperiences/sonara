@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Contact form definition</title>
+  </head>
+  <body>
+    <!-- Static copy of the form in src/components/Contact.astro so Netlify detects it at deploy time.
+         Keep the name and fields identical to it. -->
+    <form name="contacto" netlify netlify-honeypot="trampa" hidden>
+      <input name="nombre" />
+      <input name="organizacion" />
+      <input type="email" name="email" />
+      <textarea name="mensaje"></textarea>
+      <input name="trampa" />
+    </form>
+  </body>
+</html>

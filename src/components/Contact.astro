@@ -53,14 +53,24 @@ const c = Astro.props.contact;
     <div class="bg-sage rounded-2xl p-8">
       <h3 class="text-xl font-semibold text-dark mb-2">{c.formHeading}</h3>
       <p class="text-sm text-dark/70 leading-relaxed mb-6">{c.formBody}</p>
-      <form name="contact" method="POST" data-netlify="true" class="space-y-4">
-        <input type="hidden" name="form-name" value="contact" />
+      <form
+        name="contacto"
+        method="POST"
+        action="/__forms.html"
+        data-success={c.successMessage}
+        data-error={c.errorMessage}
+        class="space-y-4"
+      >
+        <input type="hidden" name="form-name" value="contacto" />
+        <p class="hidden" aria-hidden="true">
+          <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
+        </p>
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-medium text-dark mb-1">{c.labelName}</label>
             <input
               type="text"
-              name="name"
+              name="nombre"
               placeholder={c.labelName}
               class="w-full bg-transparent border-b border-dark/30 py-2 text-sm text-dark placeholder:text-dark/40 focus:outline-none focus:border-dark"
             />
@@ -69,7 +79,7 @@ const c = Astro.props.contact;
             <label class="block text-xs font-medium text-dark mb-1">{c.labelOrg}</label>
             <input
               type="text"
-              name="organisation"
+              name="organizacion"
               placeholder={c.labelOrg}
               class="w-full bg-transparent border-b border-dark/30 py-2 text-sm text-dark placeholder:text-dark/40 focus:outline-none focus:border-dark"
             />
@@ -88,7 +98,7 @@ const c = Astro.props.contact;
         <div>
           <label class="block text-xs font-medium text-dark mb-1">{c.labelMessage} *</label>
           <textarea
-            name="message"
+            name="mensaje"
             required
             rows="3"
             placeholder={c.labelMessage}
@@ -101,7 +111,38 @@ const c = Astro.props.contact;
         >
           {c.submitText}
         </button>
+        <p role="status" class="text-sm text-dark leading-relaxed" data-status></p>
       </form>
     </div>
   </div>
 </section>
+
+<script>
+  // Submits with fetch so the page doesn't navigate (every page is server-rendered, so Netlify
+  // only knows the form from public/__forms.html).
+  document.querySelectorAll<HTMLFormElement>('form[name="contacto"]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-status]');
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (button) button.disabled = true;
+      if (status) status.textContent = '';
+      try {
+        const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body,
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.reset();
+        if (status) status.textContent = form.dataset.success ?? '';
+      } catch {
+        if (status) status.textContent = form.dataset.error ?? '';
+      } finally {
+        if (button) button.disabled = false;
+      }
+    });
+  });
+</script>
