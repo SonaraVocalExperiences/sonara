@@ -1,4 +1,5 @@
 ---
+import RequiredMark from './RequiredMark.astro';
 import type { HomeContent } from '../lib/sanity/getHomeContent';
 
 interface Props {
@@ -65,15 +66,13 @@ const label = 'block text-xs font-medium text-dark mb-1';
           </div>
         </div>
         <div>
-          <label for="contacto-email" class={label}>
-            {c.labelEmail} *
-          </label>
+          <!-- prettier-ignore -->
+          <label for="contacto-email" class={label}>{c.labelEmail}<RequiredMark /></label>
           <input id="contacto-email" type="email" name="email" required autocomplete="email" class={field} />
         </div>
         <div>
-          <label for="contacto-mensaje" class={label}>
-            {c.labelMessage} *
-          </label>
+          <!-- prettier-ignore -->
+          <label for="contacto-mensaje" class={label}>{c.labelMessage}<RequiredMark /></label>
           <textarea id="contacto-mensaje" name="mensaje" required rows="3" class={`${field} resize-none`}></textarea>
         </div>
         <button
