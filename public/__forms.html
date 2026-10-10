@@ -8,6 +8,7 @@
     <!-- Static copy of the form in src/components/Contact.astro so Netlify detects it at deploy time.
          Keep the name and fields identical to it. -->
     <form name="contacto" netlify netlify-honeypot="trampa" hidden>
+      <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Sonara" />
       <input name="nombre" />
       <input name="organización" />
       <input type="email" name="email" />

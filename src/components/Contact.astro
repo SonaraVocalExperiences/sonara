@@ -42,6 +42,7 @@ const label = 'block text-xs font-medium text-dark mb-1';
         class="space-y-4"
       >
         <input type="hidden" name="form-name" value="contacto" />
+        <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Sonara" />
         <p class="hidden" aria-hidden="true">
           <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
         </p>
@@ -129,7 +130,20 @@ const label = 'block text-xs font-medium text-dark mb-1';
       if (button) button.disabled = true;
       if (status) status.textContent = '';
       try {
-        const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
+        const data = new FormData(form);
+        // Subject of the notification email, for the owner (Spanish whatever the page language).
+        // Whitespace is collapsed so a pasted newline can't break it.
+        const clean = (name: string) =>
+          String(data.get(name) ?? '')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const sender = clean('nombre') || clean('email');
+        const org = clean('organización');
+        data.set(
+          'subject',
+          `[sonaravocalexperiences.com] Nuevo mensaje de ${sender}${org ? ` (${org})` : ''}`.slice(0, 150)
+        );
+        const body = new URLSearchParams(data as unknown as Record<string, string>).toString();
         const response = await fetch(form.action, {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

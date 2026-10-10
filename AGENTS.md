@@ -124,6 +124,11 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   error messages are `contact.successMessage` / `errorMessage` in Sanity, read by the inline script
   from `data-success` / `data-error`. Astro's JSX types reject a bare `netlify` attribute, and it
   would do nothing there anyway, so only the static file carries it.
+  The notification email's subject is a hidden `subject` field (in both forms, with a default). Netlify
+  documents only the variables `%{formName}`, `%{siteName}` and `%{submissionId}` there, not field
+  values, so the submit script rewrites it to "[sonaravocalexperiences.com] Nuevo mensaje de
+  <nombre> (<organización>)". That Spanish string is hardcoded on purpose: it is for the owner, not
+  visitor-facing copy. Netlify documents no way to customize the email body.
 - `Contact.astro` stacks below `lg` in the order intro, form, details (so the Contact link lands on
   the form), and from `lg` puts the intro and details in the left column with the form spanning
   both rows on the right. The DOM order is intro, form, details, so at `lg` the tab order runs
@@ -154,12 +159,12 @@ In priority order, most important first (the design pass is internally unordered
   a notification goes to the visitor (Reply-To comes from the `email` field). Then switch the
   recipient to the contact email (Forms → Submission notifications; it can't live in
   `netlify.toml`).
-- **Clean up the notification email.** It arrives from `formresponses@netlify.com` as plain text
-  (subject "Sonara contact submission", then a label and value per field in form order). Decide what
-  to improve: the subject (a hidden `subject` field may be able to carry the visitor's name or
-  organization), the field order, or less noise. Netlify's free plan allows little restyling, and a
-  custom email through a form-handling function would add a service, so check what is possible
-  before building anything.
+- **Notification email:** the subject now names the sender (see the form notes above); test it on a
+  deploy. The body stays Netlify's plain field list, since Netlify documents no way to customize it.
+  A casual Spanish template (greeting, the fields the visitor filled in, the message in quotes, and
+  a line saying a reply goes to the sender) was drafted and set aside. Using it would take a Netlify
+  function sending through an email service, or Zapier or n8n, which adds a service, so revisit only
+  if the plain list proves too noisy.
 - Netlify: the repo is linked, `SANITY_API_READ_TOKEN` is set, branch deploys are on, and the
   `netlify.app` Studio is registered in Sanity (Studios, hosting "Other") and allowed in CORS with
   credentials, along with localhost. **At the DNS switch, repeat both Sanity settings for the
