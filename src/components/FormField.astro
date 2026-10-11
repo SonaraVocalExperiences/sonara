@@ -1,0 +1,51 @@
+---
+/** A labelled underline field on sage, ringed by `focus-ring-field` on keyboard focus. */
+import RequiredMark from './RequiredMark.astro';
+
+interface Props {
+  id: string;
+  name: string;
+  label?: string;
+  type?: 'text' | 'email';
+  required?: boolean;
+  maxlength: number;
+  autocomplete?: string;
+  multiline?: boolean;
+}
+
+const { id, name, label, type = 'text', required, maxlength, autocomplete, multiline } = Astro.props;
+
+// The textarea grows with its text from 3 to 8 lines (plus padding and underline), then scrolls;
+// where field-sizing isn't supported it stays 3 rows. Focus darkens the underline to 2px (a shadow, since a border would shift the layout); by keyboard
+// the ring's bottom edge replaces it. Only border and shadow transition: `transition-colors` would
+// fade the transparent outline (kept for forced colors) from dark, a square flash under the ring.
+const field =
+  'block w-full bg-transparent border-b border-dark/30 px-1 py-2 text-sm text-dark transition-[border-color,box-shadow] focus:outline-2 focus:outline-transparent focus:border-dark focus:shadow-[0_1px_0_0_var(--color-dark)] data-focus-visible:border-transparent data-focus-visible:shadow-none';
+---
+
+<div>
+  <!-- prettier-ignore -->
+  <label for={id} class="block text-xs font-medium text-dark mb-1">{label}{required && <RequiredMark />}</label>
+  <div class="focus-ring-field">
+    {multiline ? (
+      <textarea
+        id={id}
+        name={name}
+        required={required}
+        rows="3"
+        maxlength={maxlength}
+        class={`${field} resize-none field-sizing-content min-h-[calc(3lh+1rem+1px)] max-h-[calc(8lh+1rem+1px)]`}
+      />
+    ) : (
+      <input
+        id={id}
+        type={type}
+        name={name}
+        required={required}
+        maxlength={maxlength}
+        autocomplete={autocomplete}
+        class={field}
+      />
+    )}
+  </div>
+</div>

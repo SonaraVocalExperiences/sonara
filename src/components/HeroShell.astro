@@ -8,8 +8,8 @@
  *
  * The text erases the shell where they cross: the name (and the subtitle from md) is stroked in
  * the section's own color, painted under the fill (paint-order), so a band clears around every
- * glyph. The paragraph (and the subtitle below md) clears a band per line and the button a ring.
- * Over plain sage they are invisible.
+ * glyph. The paragraph (and the subtitle below md) clears a band per line. Over plain sage they
+ * are invisible.
  *
  * Tailwind sets plain type, spacing, and color, as in the other sections; everything for the shell
  * and the erase effect lives in the style block below.
@@ -42,7 +42,7 @@ const { headline, subtitle, body, ctaText, ctaUrl } = Astro.props.hero;
     </p>
     <a
       href={ctaUrl ?? '#contacto'}
-      class="hero__cta inline-block rounded-full bg-cream px-10 py-4 text-sm font-semibold tracking-widest text-dark transition-colors hover:bg-white"
+      class="focus-ring-outset [--ring-outset:0.375rem] inline-block rounded-full bg-cream px-10 py-4 text-sm font-semibold tracking-widest text-dark transition-[background-color] hover:bg-white"
     >
       {ctaText}
     </a>
@@ -147,9 +147,5 @@ const { headline, subtitle, body, ctaText, ctaUrl } = Astro.props.hero;
   .hero__name::selection,
   .hero__subtitle ::selection {
     -webkit-text-stroke-color: transparent;
-  }
-
-  .hero__cta {
-    box-shadow: 0 0 0 var(--erase-small) var(--color-sage);
   }
 </style>

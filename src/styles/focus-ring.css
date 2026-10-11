@@ -18,7 +18,16 @@
  * For a full-width target with a label-sized ring, put `focus-ring-row` on the link and
  * `focus-ring-pill` on a span inside it (see MobileMenu.astro).
  *
- * --ring-duration and --ring-ease are inherited so content can animate in step (see Logo.astro).
+ * A text input can't draw a ::before, so `focus-ring-field` wraps it and shows the ring when it has
+ * `data-focus-visible` (scripts/focus-visible.ts, after React Aria): keyboard focus only, since
+ * :focus-visible alone matches a clicked text field. The ring hugs the input (0.25rem out, fading in,
+ * no scale bloom, --ease-snap). A link or button draws its own with `focus-ring-outset`: the same
+ * dark ring 0.25rem out with a 2px gap (a dark ring would vanish on a dark button), pulled in a
+ * pixel when pressed. Used by the Send button, the hero CTA and the contact links.
+ *
+ * Every variant shares one ring, set by --ring-color, --ring-color-pressed, --ring-scale-from,
+ * --ring-duration and --ring-ease. The last two are inherited so content can animate in step (see
+ * Logo.astro); --ring-outset (default 0) moves the ring out.
  * Elements need padding to sit inside the ring (--spacing-pill).
  */
 
@@ -32,24 +41,55 @@
 
   --color-ring: color-mix(in srgb, var(--color-dark) 40%, var(--color-sage)); /* 4.6:1 on cream */
   --color-ring-pressed: color-mix(in srgb, var(--color-dark) 60%, var(--color-sage)); /* 6.9:1 */
+  --color-ring-field: var(--color-ink-pressed); /* 5.3:1 on sage, where the form's inputs sit; --color-ring is 2.1:1 */
 
   --ease-whip: cubic-bezier(0.7, 0, 0.2, 1); /* expressive: focus ring reveal */
   --ease-press: cubic-bezier(0.4, 0, 0.2, 1); /* soft: press feedback */
+  --ease-snap: cubic-bezier(0.2, 0, 0, 1); /* quick start, soft landing: the text field ring */
   --duration-press: 100ms;
 }
 
 @layer components {
-  /* `.focus-ring-row` is the link or button and `.focus-ring-pill` the span inside it that draws the
-     ring: the whole row is the target (hover, focus, press) but the ring hugs only the label. */
+  /* One ring for every variant, set by custom properties. The text variants (`.focus-ring`, and
+     `.focus-ring-pill` inside a `.focus-ring-row`, where the whole row is the target but the ring
+     hugs only the label) bloom from nothing; the field and button wrappers don't scale. */
   .focus-ring,
-  .focus-ring-pill {
+  .focus-ring-pill,
+  .focus-ring-field,
+  .focus-ring-outset {
     position: relative;
     isolation: isolate;
-    border-radius: 9999px;
-    transition: color var(--ring-duration) var(--ring-ease);
+  }
 
+  .focus-ring,
+  .focus-ring-pill {
+    border-radius: 9999px;
+
+    --ring-color: var(--color-ring);
+    --ring-color-pressed: var(--color-ring-pressed);
+    --ring-scale-from: 0;
     --ring-duration: var(--duration-hover);
     --ring-ease: var(--ease-whip);
+  }
+
+  .focus-ring-field,
+  .focus-ring-outset {
+    border-radius: 0.5rem;
+
+    --ring-color: var(--color-ring-field);
+    --ring-color-pressed: var(--color-ring-field);
+    --ring-scale-from: 1;
+    --ring-duration: var(--duration-press);
+    --ring-ease: var(--ease-snap);
+  }
+
+  .focus-ring-field {
+    margin-inline: -0.25rem;
+    padding-inline: 0.25rem;
+  }
+
+  .focus-ring-outset {
+    --ring-outset: 0.25rem;
   }
 
   .focus-ring,
@@ -58,19 +98,18 @@
   }
 
   .focus-ring::before,
-  .focus-ring-pill::before {
+  .focus-ring-pill::before,
+  .focus-ring-field::before,
+  .focus-ring-outset::before {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: calc(var(--ring-outset, 0px) * -1);
     z-index: -1;
     border-radius: inherit;
-    box-shadow: inset 0 0 0 4px var(--color-ring);
+    box-shadow: inset 0 0 0 4px var(--ring-color);
     opacity: 0;
-    scale: 0;
+    scale: var(--ring-scale-from);
     pointer-events: none;
-    transition-property: scale, opacity, box-shadow, inset;
-    transition-duration: var(--ring-duration);
-    transition-timing-function: var(--ring-ease);
   }
 
   /* Hover only where there is a real hover, so a tap never leaves a sticky hover color. */
@@ -84,22 +123,24 @@
   .focus-ring:focus-visible,
   .focus-ring-row:focus-visible .focus-ring-pill {
     outline: 2px solid transparent;
+    color: var(--color-ink-hover);
+  }
+
+  .focus-ring-outset:focus-visible {
+    outline: 2px solid transparent; /* forced-colors modes only; the ring is the indicator */
   }
 
   .focus-ring-row:focus-visible {
     outline: none; /* the pill carries the forced-colors outline, so it hugs the label */
   }
 
-  .focus-ring:focus-visible,
-  .focus-ring-row:focus-visible .focus-ring-pill {
-    color: var(--color-ink-hover);
-  }
-
   .focus-ring:focus-visible::before,
-  .focus-ring-row:focus-visible .focus-ring-pill::before {
+  .focus-ring-row:focus-visible .focus-ring-pill::before,
+  .focus-ring-field:has([data-focus-visible])::before,
+  .focus-ring-outset[data-focus-visible]::before {
     opacity: 1;
     scale: 1;
-    box-shadow: inset 0 0 0 2px var(--color-ring);
+    box-shadow: inset 0 0 0 2px var(--ring-color);
   }
 
   .focus-ring:active,
@@ -118,17 +159,26 @@
   }
 
   .focus-ring:focus-visible:active::before,
-  .focus-ring-row:focus-visible:active .focus-ring-pill::before {
-    inset: 1px;
-    box-shadow: inset 0 0 0 2px var(--color-ring-pressed);
+  .focus-ring-row:focus-visible:active .focus-ring-pill::before,
+  .focus-ring-outset[data-focus-visible]:active::before {
+    inset: calc(1px - var(--ring-outset, 0px));
+    box-shadow: inset 0 0 0 2px var(--ring-color-pressed);
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  /* Under reduced motion the ring just appears. */
+  @media (prefers-reduced-motion: no-preference) {
     .focus-ring,
+    .focus-ring-pill {
+      transition: color var(--ring-duration) var(--ring-ease);
+    }
+
     .focus-ring::before,
-    .focus-ring-pill,
-    .focus-ring-pill::before {
-      transition: none;
+    .focus-ring-pill::before,
+    .focus-ring-field::before,
+    .focus-ring-outset::before {
+      transition-property: scale, opacity, box-shadow, inset;
+      transition-duration: var(--ring-duration);
+      transition-timing-function: var(--ring-ease);
     }
   }
 }

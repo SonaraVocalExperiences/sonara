@@ -1,6 +1,6 @@
 ---
-import Icon from './Icon.astro';
-import RequiredMark from './RequiredMark.astro';
+import FormField from './FormField.astro';
+import FormResult from './FormResult.astro';
 import type { HomeContent } from '../lib/sanity/getHomeContent';
 import { messagesOf } from '../lib/sanity/locale';
 
@@ -10,17 +10,12 @@ interface Props {
 
 const c = Astro.props.contact;
 const { formSentTitle, formSent, formFailedTitle, formFailed } = messagesOf(Astro.currentLocale);
-
-// Underline inputs on sage. Focus thickens the underline to 2px with a shadow rather than a border so
-// nothing shifts.
-const field =
-  'w-full bg-transparent border-b border-dark/30 py-2 text-sm text-dark focus:outline-none focus:border-dark focus:shadow-[0_1px_0_0_var(--color-dark)]';
-const label = 'block text-xs font-medium text-dark mb-1';
 ---
 
 <section class="bg-cream py-24 px-6">
-  <!-- Stacked below lg: intro, then the form (so jumping to #contacto lands on it), then the details.
-       From lg: intro and details in the left column, the form spanning both rows on the right. -->
+  <!-- Intro, details, form in the source on every size, so the tab order is the visual order: stacked
+       in that order below lg, and from lg the intro and details in the left column with the form
+       spanning both rows on the right. -->
   <div class="max-w-6xl mx-auto grid grid-cols-1 gap-12 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-16">
     <div class="lg:col-start-1 lg:row-start-1">
       <h2
@@ -33,107 +28,15 @@ const label = 'block text-xs font-medium text-dark mb-1';
       <p class="text-base text-dark/80 leading-relaxed">{c.body}</p>
     </div>
 
-    <div class="bg-sage rounded-2xl p-6 sm:p-8 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start" data-contact>
-      <h3 class="text-xl font-semibold text-dark mb-2">{c.formHeading}</h3>
-      <p class="text-sm text-dark/70 leading-relaxed mb-6">{c.formBody}</p>
-      <!-- The result panels, copied into the live region below by the script -->
-      <template data-sent>
-        <div class="reveal">
-          <div class="reveal__body" data-body>
-            <div
-              data-result="sent"
-              tabindex="-1"
-              class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
-            >
-              <p class="mb-3 flex justify-between gap-4 font-bold">
-                {formSentTitle}
-                <Icon name="check-circle" size="sm" class="shrink-0 text-success" />
-              </p>
-              <p>{formSent}</p>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template data-failed>
-        <div class="reveal">
-          <div class="reveal__body" data-body>
-            <div
-              data-result="failed"
-              tabindex="-1"
-              class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
-            >
-              <p class="mb-3 flex justify-between gap-4 font-bold">
-                {formFailedTitle}
-                <Icon name="error" size="sm" class="shrink-0 text-error" />
-              </p>
-              <p>{formFailed}</p>
-            </div>
-          </div>
-        </div>
-      </template>
-      <!-- Live region, empty until a template is copied in. It must stay right before the form. -->
-      <div role="status" data-status></div>
-      <div class="reveal" data-form>
-        <div class="reveal__body">
-          <form name="contacto" method="POST" action="/__forms.html" class="space-y-4">
-            <input type="hidden" name="form-name" value="contacto" />
-            <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Sonara" />
-            <p class="hidden" aria-hidden="true">
-              <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
-            </p>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label for="contacto-nombre" class={label}>
-                  {c.labelName}
-                </label>
-                <input id="contacto-nombre" type="text" name="nombre" autocomplete="name" class={field} />
-              </div>
-              <div>
-                <label for="contacto-organizacion" class={label}>
-                  {c.labelOrg}
-                </label>
-                <input
-                  id="contacto-organizacion"
-                  type="text"
-                  name="organización"
-                  autocomplete="organization"
-                  class={field}
-                />
-              </div>
-            </div>
-            <div>
-              <!-- prettier-ignore -->
-              <label for="contacto-email" class={label}>{c.labelEmail}<RequiredMark /></label>
-              <input id="contacto-email" type="email" name="email" required autocomplete="email" class={field} />
-            </div>
-            <div>
-              <!-- prettier-ignore -->
-              <label for="contacto-mensaje" class={label}>{c.labelMessage}<RequiredMark /></label>
-              <textarea
-                id="contacto-mensaje"
-                name="mensaje"
-                required
-                rows="3"
-                class={`${field} resize-none`}
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              class="w-full bg-dark text-cream font-semibold tracking-widest text-sm py-4 rounded-full hover:bg-dark/80 transition-colors mt-4"
-            >
-              {c.submitText}
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-
     <div class="border-t border-dark/20 pt-10 lg:col-start-1 lg:row-start-2">
       <!-- Wraps to one column as the container narrows, so a long email never has to break mid-word -->
       <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,15rem),1fr))] gap-8">
         <div>
           <p class="text-xs font-bold tracking-widest text-dark/50 mb-2">{c.labelWorkshops}</p>
-          <a href={c.email && `mailto:${c.email}`} class="text-sm font-medium text-dark break-words hover:underline">
+          <a
+            href={c.email && `mailto:${c.email}`}
+            class="focus-ring-outset text-sm font-medium text-dark wrap-break-word hover:underline"
+          >
             {c.email}
           </a>
         </div>
@@ -141,19 +44,90 @@ const label = 'block text-xs font-medium text-dark mb-1';
           <p class="text-xs font-bold tracking-widest text-dark/50 mb-2">{c.labelDirect}</p>
           <a
             href={c.phone && `tel:${c.phone.replace(/\s/g, '')}`}
-            class="text-sm font-medium text-dark hover:underline"
+            class="focus-ring-outset text-sm font-medium text-dark hover:underline"
           >
             {c.phone}
           </a>
         </div>
         <div>
           <p class="text-xs font-bold tracking-widest text-dark/50 mb-2">{c.labelLinkedin}</p>
-          <a href={c.linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <a
+            href={c.linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            class="focus-ring-outset inline-block"
+          >
             <!-- LinkedIn icon -->
-            <svg class="w-7 h-7 text-[#0077B5] fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              class="block w-7 h-7 text-[#0077B5] fill-current"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path>
             </svg>
           </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-sage rounded-2xl p-6 sm:p-8 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start" data-contact>
+      <h3 id="contacto-formulario" class="text-xl font-semibold text-dark mb-2">
+        {c.formHeading}
+      </h3>
+      <p class="text-sm text-dark/70 leading-relaxed mb-6">{c.formBody}</p>
+      <FormResult name="sent" title={formSentTitle} message={formSent} />
+      <FormResult name="failed" title={formFailedTitle} message={formFailed} />
+      {/* Live region, empty until a result panel is copied in. It must stay right before the form. */}
+      <div role="status" data-status></div>
+      <div class="reveal" data-form>
+        <div class="reveal__body">
+          <form
+            name="contacto"
+            method="POST"
+            action="/__forms.html"
+            aria-labelledby="contacto-formulario"
+            class="space-y-4"
+          >
+            <input type="hidden" name="form-name" value="contacto" />
+            <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Sonara" />
+            <p class="hidden" aria-hidden="true">
+              <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
+            </p>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <FormField id="contacto-nombre" name="nombre" label={c.labelName} maxlength={80} autocomplete="name" />
+              <FormField
+                id="contacto-organizacion"
+                name="organización"
+                label={c.labelOrg}
+                maxlength={120}
+                autocomplete="organization"
+              />
+            </div>
+            <FormField
+              id="contacto-email"
+              name="email"
+              type="email"
+              label={c.labelEmail}
+              required
+              maxlength={80}
+              autocomplete="email"
+            />
+            <FormField
+              id="contacto-mensaje"
+              name="mensaje"
+              label={c.labelMessage}
+              required
+              maxlength={5000}
+              multiline
+            />
+            <button
+              type="submit"
+              class="focus-ring-outset [--ring-outset:0.375rem] block w-full bg-dark text-cream font-semibold tracking-widest text-sm py-4 rounded-full hover:bg-dark/80 active:bg-dark/70 disabled:cursor-not-allowed disabled:opacity-60 transition-[background-color,opacity]"
+            >
+              {c.submitText}
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -161,122 +135,5 @@ const label = 'block text-xs font-medium text-dark mb-1';
 </section>
 
 <script>
-  // Submits with fetch so the page doesn't navigate (every page is server-rendered, so Netlify
-  // only knows the form from public/__forms.html). The result is a server-rendered <template>
-  // copied into the live region, so the messages stay localized and out of the script.
-  document.querySelectorAll<HTMLElement>('[data-contact]').forEach((contact) => {
-    const form = contact.querySelector<HTMLFormElement>('form')!;
-    const formReveal = contact.querySelector<HTMLElement>('[data-form]')!;
-    const status = contact.querySelector<HTMLElement>('[data-status]')!;
-    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-
-    const show = (name: 'sent' | 'failed') => {
-      const template = contact.querySelector<HTMLTemplateElement>(`template[data-${name}]`)!;
-      const body = status.querySelector<HTMLElement>('[data-body]');
-      if (!body) {
-        status.replaceChildren(template.content.cloneNode(true));
-      } else if (body.firstElementChild?.getAttribute('data-result') !== name) {
-        // A panel is already showing: swap its content in place instead of animating a new one in.
-        body.replaceChildren(template.content.querySelector('[data-result]')!.cloneNode(true));
-      }
-      // A send collapses and fades the form out; `inert` keeps it out of reach while it does.
-      if (name === 'sent') {
-        form.inert = true;
-        formReveal.dataset.collapsed = '';
-      }
-      // The result sits above the form, so bring it into view without moving if it already is.
-      status.scrollIntoView({ block: 'nearest' });
-      // The form can disappear under focus, and VoiceOver speaks a focused element in the page's
-      // language but reads a live region alone in its default voice, so focus the panel. This also
-      // re-announces a repeated failure, which leaves the panel as it is.
-      status.querySelector<HTMLElement>('[data-result]')?.focus({ preventScroll: true });
-    };
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (button) button.disabled = true;
-      try {
-        const data = new FormData(form);
-        // Subject of the notification email, for the owner (Spanish whatever the page language).
-        // Whitespace is collapsed so a pasted newline can't break it.
-        const clean = (name: string) =>
-          String(data.get(name) ?? '')
-            .replace(/\s+/g, ' ')
-            .trim();
-        const sender = clean('nombre') || clean('email');
-        const org = clean('organización');
-        data.set(
-          'subject',
-          `[sonaravocalexperiences.com] Nuevo mensaje de ${sender}${org ? ` (${org})` : ''}`.slice(0, 150)
-        );
-        const body = new URLSearchParams(data as unknown as Record<string, string>).toString();
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body,
-        });
-        if (!response.ok) throw new Error(String(response.status));
-        show('sent');
-      } catch {
-        show('failed');
-      } finally {
-        if (button) button.disabled = false;
-      }
-    });
-  });
+  import '../scripts/contact-form';
 </script>
-
-<style>
-  /* The result panel and the form animate their height through a one-row grid, the cross-browser
-     way to animate to and from `auto`: the row runs between 0fr and 1fr while the content
-     (min-height 0, overflow hidden) follows. Only they animate; the sage card just resizes with
-     them. */
-  .reveal {
-    display: grid;
-    grid-template-rows: 1fr;
-  }
-
-  .reveal__body {
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  /* The gap between the panel and the form belongs to the form, so it collapses with it. */
-  [data-status]:not(:empty) + .reveal > .reveal__body {
-    padding-top: 1.5rem;
-  }
-
-  /* The form fades out as it collapses. `visibility` rather than `display`: it animates (holding
-     "visible" until the end of the exit), and the collapsed form leaves the accessibility tree and
-     tab order once it is hidden. */
-  .reveal[data-collapsed] {
-    grid-template-rows: 0fr;
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      transition: grid-template-rows var(--duration-menu) var(--ease-press);
-    }
-
-    .reveal[data-form] {
-      transition:
-        grid-template-rows var(--duration-menu) var(--ease-press),
-        opacity var(--duration-menu) var(--ease-press),
-        visibility var(--duration-menu);
-    }
-
-    .reveal__body {
-      transition: padding-top var(--duration-menu) var(--ease-press);
-    }
-
-    /* A panel inserted into the live region opens up from nothing, without fading, which resizes the
-       sage card with it; the form, present at load, doesn't animate in. */
-    @starting-style {
-      [data-status] > .reveal {
-        grid-template-rows: 0fr;
-      }
-    }
-  }
-</style>

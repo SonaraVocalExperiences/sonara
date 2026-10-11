@@ -28,6 +28,8 @@ must pass. CI (`.github/workflows/ci.yml`) runs all but the build, which Netlify
 - Never use Vercel or any Vercel product (v0, hosting, etc.).
 - Hosting is Netlify (free tier). Build settings live in `netlify.toml`, not the dashboard.
 - Prefer free, open-source, low-cost tools.
+- The visual order and the tab (DOM) order must always coincide, at every size. Don't reorder
+  anything visually with `order`, grid placement, or the like unless the source order matches too.
 
 ## Identifiers
 
@@ -119,35 +121,52 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
 - `@sanity/client` stays on v7 because visual-editing v5 declares `^7.24.0` as its peer. Nothing
   here needs v8; move both up together once `@sanity/astro` adopts visual-editing v6. The embedded
   Studio brings its own client v8 as a dependency, which is expected.
-- The contact form's field names are Spanish (`nombre`, `organización`, `mensaje`, `trampa` for the
-  honeypot) except `email`, which Netlify uses as the Reply-To of notification emails. The form in
-  `Contact.astro` and the one in `public/__forms.html` must keep identical names. The sent
-  and failed messages are `formSentTitle` / `formSent` / `formFailedTitle` / `formFailed` in
-  `messages`, rendered into `<template data-sent>` / `<template data-failed>`; the submit script
-  copies one into the empty `role="status"` region, calls `scrollIntoView({ block: 'nearest' })` so
-  it isn't missed on a tall phone card (instant, not smooth, so it doesn't conflict with the
-  scrolling note below), and focuses the panel (VoiceOver reads a live region alone in its default
-  voice, not the page's language, but speaks a focused element in it). A repeated failure leaves the
-  panel as it is and only refocuses it; a failure after a success can't happen. A send collapses
-  and fades the form (`inert`, then `visibility: hidden` at the end), a failure keeps it. The
-  panel and the form animate their height through a one-row grid (`.reveal`, 0fr to 1fr, the
-  cross-browser way to animate to and from `auto`), the panel's entry with `@starting-style` (height only, no fade; only the form fades), with
-  `--duration-menu` and `--ease-press`, only under `prefers-reduced-motion: no-preference` like the
-  menu; the sage card isn't animated itself. The gap under the panel belongs to the form so it
-  collapses with it, and the status region must stay directly before the form for that rule. The
-  icons are `text-success` / `text-error` (theme tokens in `global.css`, chosen for 4:1+ on the cream
-  panel). Astro's JSX types reject a bare `netlify` attribute, and it
-  would do nothing there anyway, so only the static file carries it.
-  The notification email's subject is a hidden `subject` field (in both forms, with a default). Netlify
-  documents only the variables `%{formName}`, `%{siteName}` and `%{submissionId}` there, not field
-  values, so the submit script rewrites it to "[sonaravocalexperiences.com] Nuevo mensaje de
-  <nombre> (<organización>)". That Spanish string is hardcoded on purpose: it is for the owner, not
-  visitor-facing copy. Netlify documents no way to customize the email body.
-- `Contact.astro` stacks below `lg` in the order intro, form, details (so the Contact link lands on
-  the form), and from `lg` puts the intro and details in the left column with the form spanning
-  both rows on the right. The DOM order is intro, form, details, so at `lg` the tab order runs
-  from the form to the details at the bottom left. The details grid wraps by itself (`auto-fit`),
-  and the name and organization inputs stack below `sm`.
+- The contact form (`Contact.astro`, with `FormField.astro` and `FormResult.astro`):
+  - Field names are Spanish (`nombre`, `organización`, `mensaje`, `trampa` for the honeypot) except
+    `email`, which Netlify uses as the Reply-To of notification emails. `FormField` usage in
+    `Contact.astro` and `public/__forms.html` must keep identical names. Astro's JSX types reject a
+    bare `netlify` attribute, and it would do nothing there anyway, so only the static file has it.
+  - The notification email's subject is a hidden `subject` field (in both forms, with a default).
+    Netlify documents only `%{formName}`, `%{siteName}` and `%{submissionId}` there, not field
+    values, so `scripts/contact-form.ts` rewrites it to "[sonaravocalexperiences.com] Nuevo mensaje
+    de <nombre> (<organización>)". It is for the owner, not visitor-facing copy, so it is hardcoded
+    Spanish. Netlify documents no way to customize the email body.
+  - The form is named by its heading through `aria-labelledby`, so it is a form landmark.
+  - Validation is the browser's own. The submit button's click trims the text fields first, so
+    whitespace-only text fails `required` with the native bubble. Limits: name and email 80,
+    organization 120, message 5000. The message grows from 3 to 8 lines with `field-sizing: content`
+    (Baseline since mid-2026; older browsers keep 3 rows and scroll).
+  - Focus rings: `scripts/focus-visible.ts`, after React Aria's `useFocusVisible`, keeps the input
+    modality in a module variable and marks the focused element with `data-focus-visible` on
+    keyboard focus only (in a text field only Tab and Escape count, so typing in a clicked field
+    doesn't show it; what counts as one is `:read-write`). `:focus-visible` alone matches a clicked
+    text field. A `focus-ring-field` wrapper (`focus-ring.css`) shows the ring when the input in it
+    has the attribute; a click only darkens the underline to 2px, with a shadow. Only the input's
+    `border-color` and `box-shadow` transition: `transition-colors` also fades its transparent
+    outline from dark, a square flash under the round ring, so the same goes for any element with
+    `focus-ring-outset`, which the Send button, the hero CTA and the contact links use to draw the
+    dark ring themselves, 0.25rem out with a gap (a dark ring would vanish on a dark button).
+    Both ease with `--ease-snap`.
+  - The Send button has `active:` and `disabled:` styles (the script disables it while sending).
+    Enter fires the click on keydown, so it never shows `:active`, and the disabled style is its
+    visible response. There is deliberately no sending label, since the request should be fast.
+  - Results: the messages are `formSentTitle` / `formSent` / `formFailedTitle` / `formFailed` in
+    `messages`, rendered by `FormResult` into `<template data-result-template>`s. The script copies
+    one into the empty `role="status"` region, which must stay directly before the form (for the
+    gap rule in `reveal.css`), scrolls it into view (`block: 'nearest'`, instant, so it doesn't
+    conflict with the scrolling note below) and focuses it: VoiceOver speaks a focused element in
+    the page's language but reads a live region in its default voice. A repeated failure leaves the
+    panel and refocuses it. A send collapses and fades the form (`inert`, then `visibility: hidden`
+    at the end); a failure keeps it.
+  - `reveal.css`: the panel and the form animate their height through a one-row grid (0fr to 1fr,
+    the cross-browser way to animate to and from `auto`), the panel's entry with `@starting-style`
+    (height only, no fade), with `--duration-menu` and `--ease-press`, only under
+    `prefers-reduced-motion: no-preference`, like the menu. The form clips only once collapsed, so
+    the rings aren't cut off (`z-index` can't do that). The icons use `text-success` / `text-error`.
+- `Contact.astro` is intro, details, form in the source on every size, so the tab order is the
+  visual order: stacked in that order below `lg`, and from `lg` the intro and details in the left
+  column with the form spanning both rows on the right. The details grid wraps by itself
+  (`auto-fit`), and the name and organization inputs stack below `sm`.
 - Section anchors are Spanish and hardcoded, not CMS-editable: `#enfoque`, `#contacto`.
 - Scrolling is the browser default: no `scroll-behavior: smooth` and no scroll scripts. Smooth
   scrolling behaves differently across browsers (Chrome animates scroll restoration on refresh,
@@ -203,6 +222,12 @@ In priority order, most important first (the design pass is internally unordered
   - Testimonials: find an alternative to the marquee.
   - Contact: the section heading/subtitle and the form box's own heading/body are redundant; decide
     with the owner which to drop (copy is in Sanity, so removing one means a schema change).
+  - Contact link: on mobile it lands on the heading, so the form box sits below the details, out of
+    view. Find a fix that keeps the source order (see Hard constraints).
+  - Focus rings: reconcile the two families, the `focus-ring` bloom ring (nav, menu, language
+    switcher, logo: scale bloom, whip easing, drawn inside, a hover color change) and the dark
+    `focus-ring-field` / `focus-ring-outset` ring (form, Send button, hero CTA, contact links: fade,
+    snap easing, 0.25rem outside). Settle one set of styles and transitions.
   - Footer: make email and phone links; text is a bit small and likely low contrast.
 - Video URL in Sanity is a placeholder (`REPLACE_WITH_VIDEO_ID`).
 - Client handoff: walk them through the Studio and write a short plain-English guide.

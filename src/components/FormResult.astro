@@ -1,0 +1,32 @@
+---
+/** A contact form result panel, as a <template> the submit script copies into the live region. */
+import Icon from './Icon.astro';
+
+interface Props {
+  name: 'sent' | 'failed';
+  title: string;
+  message: string;
+}
+
+const { name, title, message } = Astro.props;
+const icon = { sent: 'check-circle', failed: 'error' } as const;
+const color = { sent: 'text-success', failed: 'text-error' };
+---
+
+<template data-result-template={name}>
+  <div class="reveal">
+    <div class="reveal__body" data-body>
+      <div
+        data-result={name}
+        tabindex="-1"
+        class="rounded-[10px] border-2 border-dark bg-cream/90 p-6 text-sm leading-relaxed text-dark focus:outline-none"
+      >
+        <p class="mb-3 flex justify-between gap-4 font-bold">
+          {title}
+          <Icon name={icon[name]} size="sm" class={`shrink-0 ${color[name]}`} />
+        </p>
+        <p>{message}</p>
+      </div>
+    </div>
+  </div>
+</template>

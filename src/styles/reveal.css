@@ -1,0 +1,60 @@
+/* The contact form's result panel and the form animate their height through a one-row grid, the
+   cross-browser way to animate to and from `auto`: the row runs between 0fr and 1fr while the
+   content (min-height 0, overflow hidden) follows, so the sage card just resizes with them. */
+@layer components {
+  .reveal {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+
+  .reveal__body {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* The form clips only while it collapses (a send), so its focus rings can reach past its box. */
+  .reveal[data-form] > .reveal__body {
+    overflow: visible;
+  }
+
+  .reveal[data-form][data-collapsed] > .reveal__body {
+    overflow: hidden;
+  }
+
+  /* The gap under a panel belongs to the form, so it collapses with it. */
+  [data-status]:not(:empty) + .reveal > .reveal__body {
+    padding-top: 1.5rem;
+  }
+
+  /* `visibility`, not `display`: it animates, holding "visible" to the end of the exit, and then
+     the collapsed form leaves the accessibility tree and tab order. */
+  .reveal[data-collapsed] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      transition: grid-template-rows var(--duration-menu) var(--ease-press);
+    }
+
+    .reveal[data-form] {
+      transition:
+        grid-template-rows var(--duration-menu) var(--ease-press),
+        opacity var(--duration-menu) var(--ease-press),
+        visibility var(--duration-menu);
+    }
+
+    .reveal__body {
+      transition: padding-top var(--duration-menu) var(--ease-press);
+    }
+
+    /* A panel opens up from nothing, without fading; the form, there at load, doesn't animate in. */
+    @starting-style {
+      [data-status] > .reveal {
+        grid-template-rows: 0fr;
+      }
+    }
+  }
+}

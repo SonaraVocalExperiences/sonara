@@ -14,7 +14,7 @@ const { headline, subtitle, body, ctaText, ctaUrl } = Astro.props.hero;
   <p class="text-base md:text-lg text-cream max-w-xl leading-relaxed mb-12">{body}</p>
   <a
     href={ctaUrl ?? '#contacto'}
-    class="inline-block bg-cream text-dark font-semibold tracking-widest text-sm px-10 py-4 rounded-full hover:bg-white transition-colors"
+    class="focus-ring-outset [--ring-outset:0.375rem] inline-block bg-cream text-dark font-semibold tracking-widest text-sm px-10 py-4 rounded-full hover:bg-white transition-[background-color]"
   >
     {ctaText}
   </a>

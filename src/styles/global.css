@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './focus-ring.css';
+@import './reveal.css';
 
 @theme static {
   --color-sage: #8fa88a;

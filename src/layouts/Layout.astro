@@ -65,5 +65,8 @@ const visualEditingEnabled = isPreview(Astro.cookies);
   <body class="bg-cream text-dark font-sans antialiased">
     <slot />
     <VisualEditing enabled={visualEditingEnabled} />
+    <script>
+      import '../scripts/focus-visible';
+    </script>
   </body>
 </html>
