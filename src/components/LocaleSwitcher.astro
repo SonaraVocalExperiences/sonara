@@ -8,7 +8,7 @@
  * - Visible text is the abbreviation (aria-hidden, with an <abbr title> for WCAG 3.1.4); the
  *   accessible name is the language's own name in a visually hidden span, read in that language.
  * - State is shown by weight and a tinted pill (current is semibold on it), never by color alone.
- * - Links use the shared press-ring, like the nav links, so hover, press, and keyboard focus (a
+ * - Links use the shared focus-ring, like the nav links, so hover, press, and keyboard focus (a
  *   4.6:1 ring in place of the browser outline) look and time the same across the header.
  * - Targets are at least 44×44px (2.5.5); every state keeps text contrast ≥ 7:1 (1.4.6).
  * - translate="no" keeps page translation from rewriting language names.
@@ -32,7 +32,7 @@ const current = localeOf(Astro.currentLocale);
           </span>
         ) : (
           <a
-            class="locale-switcher__item press-ring"
+            class="locale-switcher__item focus-ring"
             href={withVariants(localePath(l.id), Astro.url)}
             lang={l.hreflang}
             hreflang={l.hreflang}

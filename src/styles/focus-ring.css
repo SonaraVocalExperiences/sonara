@@ -1,5 +1,5 @@
 /*
- * Interactive states for links and buttons: add `press-ring`. Modeled on a React Spectrum quiet
+ * Interactive states for links and buttons: add `focus-ring`. Modeled on a React Spectrum quiet
  * button, so hover and press only change the text color and the ring is a keyboard focus
  * indicator (a mouse click or tap never shows it).
  *
@@ -15,8 +15,8 @@
  * edge, so at 2px it is a full perimeter (WCAG 2.4.13, AAA). Its colors clear 3:1 against cream,
  * and a transparent outline keeps focus visible in forced-colors modes.
  *
- * For a full-width target with a label-sized ring, put `press-ring-row` on the link and
- * `press-ring-pill` on a span inside it (see MobileMenu.astro).
+ * For a full-width target with a label-sized ring, put `focus-ring-row` on the link and
+ * `focus-ring-pill` on a span inside it (see MobileMenu.astro).
  *
  * --ring-duration and --ring-ease are inherited so content can animate in step (see Logo.astro).
  * Elements need padding to sit inside the ring (--spacing-pill).
@@ -39,10 +39,10 @@
 }
 
 @layer components {
-  /* `.press-ring-row` is the link or button and `.press-ring-pill` the span inside it that draws the
+  /* `.focus-ring-row` is the link or button and `.focus-ring-pill` the span inside it that draws the
      ring: the whole row is the target (hover, focus, press) but the ring hugs only the label. */
-  .press-ring,
-  .press-ring-pill {
+  .focus-ring,
+  .focus-ring-pill {
     position: relative;
     isolation: isolate;
     border-radius: 9999px;
@@ -52,13 +52,13 @@
     --ring-ease: var(--ease-whip);
   }
 
-  .press-ring,
-  .press-ring-row {
+  .focus-ring,
+  .focus-ring-row {
     -webkit-tap-highlight-color: transparent;
   }
 
-  .press-ring::before,
-  .press-ring-pill::before {
+  .focus-ring::before,
+  .focus-ring-pill::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -75,59 +75,59 @@
 
   /* Hover only where there is a real hover, so a tap never leaves a sticky hover color. */
   @media (hover: hover) {
-    .press-ring:hover,
-    .press-ring-row:hover .press-ring-pill {
+    .focus-ring:hover,
+    .focus-ring-row:hover .focus-ring-pill {
       color: var(--color-ink-hover);
     }
   }
 
-  .press-ring:focus-visible,
-  .press-ring-row:focus-visible .press-ring-pill {
+  .focus-ring:focus-visible,
+  .focus-ring-row:focus-visible .focus-ring-pill {
     outline: 2px solid transparent;
   }
 
-  .press-ring-row:focus-visible {
+  .focus-ring-row:focus-visible {
     outline: none; /* the pill carries the forced-colors outline, so it hugs the label */
   }
 
-  .press-ring:focus-visible,
-  .press-ring-row:focus-visible .press-ring-pill {
+  .focus-ring:focus-visible,
+  .focus-ring-row:focus-visible .focus-ring-pill {
     color: var(--color-ink-hover);
   }
 
-  .press-ring:focus-visible::before,
-  .press-ring-row:focus-visible .press-ring-pill::before {
+  .focus-ring:focus-visible::before,
+  .focus-ring-row:focus-visible .focus-ring-pill::before {
     opacity: 1;
     scale: 1;
     box-shadow: inset 0 0 0 2px var(--color-ring);
   }
 
-  .press-ring:active,
-  .press-ring-row:active {
+  .focus-ring:active,
+  .focus-ring-row:active {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
   }
 
-  .press-ring:active,
-  .press-ring-row:active .press-ring-pill {
+  .focus-ring:active,
+  .focus-ring-row:active .focus-ring-pill {
     color: var(--color-ink-pressed);
 
     --ring-duration: var(--duration-press);
     --ring-ease: var(--ease-press);
   }
 
-  .press-ring:focus-visible:active::before,
-  .press-ring-row:focus-visible:active .press-ring-pill::before {
+  .focus-ring:focus-visible:active::before,
+  .focus-ring-row:focus-visible:active .focus-ring-pill::before {
     inset: 1px;
     box-shadow: inset 0 0 0 2px var(--color-ring-pressed);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .press-ring,
-    .press-ring::before,
-    .press-ring-pill,
-    .press-ring-pill::before {
+    .focus-ring,
+    .focus-ring::before,
+    .focus-ring-pill,
+    .focus-ring-pill::before {
       transition: none;
     }
   }

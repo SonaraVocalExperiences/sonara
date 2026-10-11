@@ -34,7 +34,7 @@ const { links, cta = {} } = Astro.props;
 const { menuLabel, closeLabel } = messagesOf(Astro.currentLocale);
 ---
 
-<button type="button" class="press-ring flex size-12 items-center justify-center md:hidden" aria-haspopup="dialog">
+<button type="button" class="focus-ring flex size-12 items-center justify-center md:hidden" aria-haspopup="dialog">
   <Icon name="menu" />
   <span class="sr-only">{menuLabel}</span>
 </button>
@@ -42,7 +42,7 @@ const { menuLabel, closeLabel } = messagesOf(Astro.currentLocale);
 <dialog id="site-menu" class="site-menu" aria-label={menuLabel}>
   <div class="mx-auto max-w-6xl px-6 pb-8">
     <div class="flex h-(--header-height) items-center justify-end">
-      <button type="button" class="press-ring -me-3 flex size-12 items-center justify-center">
+      <button type="button" class="focus-ring -me-3 flex size-12 items-center justify-center">
         <Icon name="close" />
         <span class="sr-only">{closeLabel}</span>
       </button>
@@ -51,8 +51,8 @@ const { menuLabel, closeLabel } = messagesOf(Astro.currentLocale);
       <ul class="menu-list mx-pill text-center text-xl font-medium tracking-tight">
         {links.map(({ href, label }) => (
           <li>
-            <a href={href} class="press-ring-row flex min-h-16 items-center justify-center">
-              <span class="press-ring-pill flex min-h-14 items-center px-pill">{label}</span>
+            <a href={href} class="focus-ring-row flex min-h-16 items-center justify-center">
+              <span class="focus-ring-pill flex min-h-14 items-center px-pill">{label}</span>
             </a>
           </li>
         ))}

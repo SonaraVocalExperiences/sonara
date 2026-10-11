@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import './press-ring.css';
+@import './focus-ring.css';
 
 @theme static {
   --color-sage: #8fa88a;
