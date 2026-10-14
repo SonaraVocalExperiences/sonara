@@ -39,7 +39,6 @@ document.querySelectorAll<HTMLElement>('[data-contact]').forEach((contact) => {
     if (button) button.disabled = true;
     try {
       const data = new FormData(form);
-      // The notification email's subject is for the owner, so Spanish whatever the page language.
       const clean = (name: string) =>
         String(data.get(name) ?? '')
           .replace(/\s+/g, ' ')

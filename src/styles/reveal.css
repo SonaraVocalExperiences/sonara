@@ -26,6 +26,12 @@
     padding-top: 1.5rem;
   }
 
+  /* A collapsing form keeps no gap: padding isn't clipped by the 0fr row, so it would grow back
+     as the form shrinks. */
+  .reveal[data-form][data-collapsed] > .reveal__body {
+    padding-top: 0;
+  }
+
   /* `visibility`, not `display`: it animates, holding "visible" to the end of the exit, and then
      the collapsed form leaves the accessibility tree and tab order. */
   .reveal[data-collapsed] {
