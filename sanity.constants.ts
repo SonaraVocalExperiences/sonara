@@ -44,11 +44,16 @@ export const defaultLocale: LocaleId = locales[0].id;
  *  - `switcherLabel` names the language switcher's `<nav>` landmark.
  *  - `menuLabel` names the main `<nav>` landmark, the small-screen menu button, and its dialog.
  *  - `closeLabel` names the menu dialog's close button.
+ *  - `emailExample` is the email field's visible description, an example of the expected format.
+ *  - `emailInvalid` is the email field's `title`, shown after the browser's own message when the address
+ *    fails its `pattern` (the browser can't name the format by itself).
  *  - `formSentTitle`, `formSent`, `formFailedTitle` and `formFailed` are the contact form's result messages. */
 export type Messages = {
   switcherLabel: string;
   menuLabel: string;
   closeLabel: string;
+  emailExample: string;
+  emailInvalid: string;
   formSentTitle: string;
   formSent: string;
   formFailedTitle: string;
@@ -60,6 +65,8 @@ export const messages: Record<LocaleId, Messages> = {
     switcherLabel: 'Idioma',
     menuLabel: 'Menú',
     closeLabel: 'Cerrar',
+    emailExample: 'nombre@ejemplo.com',
+    emailInvalid: 'Introduce un correo válido, como nombre@ejemplo.com',
     formSentTitle: 'Mensaje enviado correctamente',
     formSent: 'Gracias por tu mensaje. Nos pondremos en contacto contigo pronto.',
     formFailedTitle: 'Algo ha salido mal',
@@ -69,6 +76,8 @@ export const messages: Record<LocaleId, Messages> = {
     switcherLabel: 'Idioma',
     menuLabel: 'Menú',
     closeLabel: 'Tancar',
+    emailExample: 'nom@exemple.com',
+    emailInvalid: 'Introdueix un correu vàlid, com nom@exemple.com',
     formSentTitle: 'Missatge enviat correctament',
     formSent: 'Gràcies pel teu missatge. Ens posarem en contacte amb tu aviat.',
     formFailedTitle: 'Alguna cosa ha anat malament',
@@ -78,6 +87,8 @@ export const messages: Record<LocaleId, Messages> = {
     switcherLabel: 'Language',
     menuLabel: 'Menu',
     closeLabel: 'Close',
+    emailExample: 'name@example.com',
+    emailInvalid: 'Enter a valid email address, like name@example.com',
     formSentTitle: 'Message sent successfully',
     formSent: "Thank you for your message. We'll get in touch with you soon.",
     formFailedTitle: 'Something went wrong',

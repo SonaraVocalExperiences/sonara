@@ -1,51 +1,77 @@
 ---
-/** A labelled underline field on sage, ringed by `focus-ring-field` on keyboard focus. */
+/** A labelled box field on sage, with an optional description below, ringed by `focus-ring-field` on keyboard focus. */
 import RequiredMark from './RequiredMark.astro';
 
 interface Props {
   id: string;
   name: string;
   label?: string;
+  description?: string;
   type?: 'text' | 'email';
   required?: boolean;
   maxlength: number;
   autocomplete?: string;
+  pattern?: string;
+  title?: string;
   multiline?: boolean;
 }
 
-const { id, name, label, type = 'text', required, maxlength, autocomplete, multiline } = Astro.props;
+const {
+  id,
+  name,
+  label,
+  description,
+  type = 'text',
+  required,
+  maxlength,
+  autocomplete,
+  pattern,
+  title,
+  multiline,
+} = Astro.props;
 
-// The textarea grows with its text from 3 to 8 lines (plus padding and underline), then scrolls;
-// where field-sizing isn't supported it stays 3 rows. Focus darkens the underline to 2px (a shadow, since a border would shift the layout); by keyboard
-// the ring's bottom edge replaces it. Only border and shadow transition: `transition-colors` would
+// The textarea grows with its text from 3 to 8 lines (plus padding and border), then scrolls;
+// where field-sizing isn't supported it stays 3 rows. Focus darkens the whole border; by keyboard
+// the ring sits flush outside it. Only the border color transitions: `transition-colors` would
 // fade the transparent outline (kept for forced colors) from dark, a square flash under the ring.
 const field =
-  'block w-full bg-transparent border-b border-dark/30 px-1 py-2 text-sm text-dark transition-[border-color,box-shadow] focus:outline-2 focus:outline-transparent focus:border-dark focus:shadow-[0_1px_0_0_var(--color-dark)] data-focus-visible:border-transparent data-focus-visible:shadow-none';
+  'block w-full rounded-lg bg-dark/5 border border-dark/30 hover:border-dark/50 px-3 py-2 text-sm text-dark transition-[border-color] focus:outline-2 focus:outline-transparent focus:border-dark';
+
+const props = {
+  id,
+  name,
+  required,
+  maxlength,
+  'aria-describedby': description ? `${id}-description` : undefined,
+};
 ---
 
 <div>
   <!-- prettier-ignore -->
-  <label for={id} class="block text-xs font-medium text-dark mb-1">{label}{required && <RequiredMark />}</label>
+  <label for={id} class="block text-xs font-medium text-dark mb-1.5">{label}{required && <RequiredMark />}</label>
   <div class="focus-ring-field">
     {multiline ? (
       <textarea
-        id={id}
-        name={name}
-        required={required}
+        {...props}
         rows="3"
-        maxlength={maxlength}
-        class={`${field} resize-none field-sizing-content min-h-[calc(3lh+1rem+1px)] max-h-[calc(8lh+1rem+1px)]`}
+        class={`${field} resize-none field-sizing-content min-h-[calc(3lh+1rem+2px)] max-h-[calc(8lh+1rem+2px)]`}
       />
     ) : (
       <input
-        id={id}
+        {...props}
         type={type}
-        name={name}
-        required={required}
-        maxlength={maxlength}
         autocomplete={autocomplete}
+        pattern={pattern}
+        title={title}
+        autocapitalize={type === 'email' ? 'none' : undefined}
+        spellcheck={type === 'email' ? false : undefined}
         class={field}
       />
     )}
   </div>
+  {description && (
+    <span id={`${id}-description`} class="block text-xs text-dark/90 mt-1.5">
+      {description}
+    </span>
+  )}
 </div>

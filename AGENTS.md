@@ -135,15 +135,21 @@ Sanity, never in the repo; never hardcode locale-specific strings in `.astro` fi
   - Validation is the browser's own. The submit button's click trims the text fields first, so
     whitespace-only text fails `required` with the native bubble. Limits: name and email 80,
     organization 120, message 5000. The message grows from 3 to 8 lines with `field-sizing: content`
-    (Baseline since mid-2026; older browsers keep 3 rows and scroll).
+    (Baseline since mid-2026; older browsers keep 3 rows and scroll). `type="email"` accepts `a@b`,
+    so the email also has a loose `pattern` (a dot and a TLD of 2+ letters in the domain). Its
+    description below the field (`emailExample`) is the visible format hint the pattern needs for
+    accessibility, linked by `aria-describedby`; the `title` (`emailInvalid`) only adds to the
+    browser's message. The pattern lives only in `Contact.astro`, since `public/__forms.html` just
+    mirrors names.
   - Focus rings: `scripts/focus-visible.ts`, after React Aria's `useFocusVisible`, keeps the input
     modality in a module variable and marks the focused element with `data-focus-visible` on
     keyboard focus only (in a text field only Tab and Escape count, so typing in a clicked field
     doesn't show it; what counts as one is `:read-write`). `:focus-visible` alone matches a clicked
     text field. A `focus-ring-field` wrapper (`focus-ring.css`) shows the ring when the input in it
-    has the attribute; a click only darkens the underline to 2px, with a shadow. Only the input's
-    `border-color` and `box-shadow` transition: `transition-colors` also fades its transparent
-    outline from dark, a square flash under the round ring, so the same goes for any element with
+    has the attribute, drawn flush outside the input's border (`--ring-outset`, radius the input's
+    plus 0.25rem); a click only darkens the whole border, and hover darkens it a step. Only the
+    input's `border-color` transitions: `transition-colors` also fades its transparent outline from
+    dark, a square flash under the round ring, so the same goes for any element with
     `focus-ring-outset`, which the Send button, the hero CTA and the contact links use to draw the
     dark ring themselves, 0.25rem out with a gap (a dark ring would vanish on a dark button).
     Both ease with `--ease-snap`.

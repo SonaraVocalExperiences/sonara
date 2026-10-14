@@ -9,7 +9,11 @@ interface Props {
 }
 
 const c = Astro.props.contact;
-const { formSentTitle, formSent, formFailedTitle, formFailed } = messagesOf(Astro.currentLocale);
+const { emailExample, emailInvalid, formSentTitle, formSent, formFailedTitle, formFailed } = messagesOf(
+  Astro.currentLocale
+);
+// On top of `type="email"`, which accepts `a@b`: the domain needs a dot and a TLD of 2+ letters. Loose on purpose.
+const emailPattern = '[^@\\s]+@[^@\\s]+\\.[^@\\s]{2,}';
 ---
 
 <section class="bg-cream py-24 px-6">
@@ -87,14 +91,14 @@ const { formSentTitle, formSent, formFailedTitle, formFailed } = messagesOf(Astr
             method="POST"
             action="/__forms.html"
             aria-labelledby="contacto-formulario"
-            class="space-y-4"
+            class="space-y-6"
           >
             <input type="hidden" name="form-name" value="contacto" />
             <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Sonara" />
             <p class="hidden" aria-hidden="true">
               <input type="text" name="trampa" tabindex="-1" autocomplete="off" />
             </p>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <FormField id="contacto-nombre" name="nombre" label={c.labelName} maxlength={80} autocomplete="name" />
               <FormField
                 id="contacto-organizacion"
@@ -109,9 +113,12 @@ const { formSentTitle, formSent, formFailedTitle, formFailed } = messagesOf(Astr
               name="email"
               type="email"
               label={c.labelEmail}
+              description={emailExample}
               required
               maxlength={80}
               autocomplete="email"
+              pattern={emailPattern}
+              title={emailInvalid}
             />
             <FormField
               id="contacto-mensaje"
